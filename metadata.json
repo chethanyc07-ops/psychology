@@ -1,0 +1,6 @@
+{
+  "name": "Solace Campus — Higher Education Mental Health & Psychological Support System",
+  "description": "Clinical self-assessment (PHQ-9/GAD-7), licensed campus counselor scheduling, longitudinal wellness tracking, and CBT cognitive restructuring for university students.",
+  "requestFramePermissions": [],
+  "majorCapabilities": ["MAJOR_CAPABILITY_SERVER_SIDE_GEMINI_API"]
+}
