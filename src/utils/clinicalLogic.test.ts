@@ -7,6 +7,8 @@ import {
   computeWellnessSummary,
   buildWellnessChartData,
   validateCbtEntry,
+  toggleEmpathyReaction,
+  computePostEmpathySummary,
 } from './clinicalLogic';
 
 test('evaluatePhq9 rejects incomplete responses and identifies missing item indices', () => {
@@ -121,4 +123,40 @@ test('buildWellnessChartData sorts logs chronologically and computes deltas and 
   assert.equal(insights.optimalSleepDays, 2);
   assert.equal(insights.bestDayLabel, '10-25 (7.5h · 4/5)');
 });
+
+test('toggleEmpathyReaction increments and decrements Send a Hug, Relate, and Rooting for You accurately', () => {
+  const initial = {
+    hugs: 24,
+    relates: 41,
+    rooting: 15,
+    userHugged: false,
+    userRelated: false,
+    userRooted: false,
+  };
+
+  const afterHug = toggleEmpathyReaction(initial, 'hug');
+  assert.equal(afterHug.hugs, 25);
+  assert.equal(afterHug.userHugged, true);
+
+  const afterRelate = toggleEmpathyReaction(afterHug, 'relate');
+  assert.equal(afterRelate.relates, 42);
+  assert.equal(afterRelate.userRelated, true);
+
+  const afterRooting = toggleEmpathyReaction(afterRelate, 'rooting');
+  assert.equal(afterRooting.rooting, 16);
+  assert.equal(afterRooting.userRooted, true);
+
+  const summary = computePostEmpathySummary(afterRooting, 'AnonFox_21');
+  assert.equal(summary.totalSupportCount, 83);
+  assert.deepEqual(summary.activeReactions, ['hug', 'relate', 'rooting']);
+  assert.equal(
+    summary.supportiveFeedbackText,
+    "You sent a warm hug, shared that you relate, and are rooting for them — AnonFox_21 knows they aren't alone."
+  );
+
+  const unHugged = toggleEmpathyReaction(afterRooting, 'hug');
+  assert.equal(unHugged.hugs, 24);
+  assert.equal(unHugged.userHugged, false);
+});
+
 

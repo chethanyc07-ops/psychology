@@ -1,7 +1,7 @@
 import React, { useState } from 'react';
 import { Counselor, ScheduledAppointment } from '../utils/seedData';
 import { validateBookingInput, BookingFormInput } from '../utils/clinicalLogic';
-import { Calendar, MapPin, Check, XCircle, AlertCircle } from 'lucide-react';
+import { Calendar, MapPin, Check, XCircle, AlertCircle, HeartHandshake } from 'lucide-react';
 
 interface CounselorDirectoryProps {
   counselors: Counselor[];
@@ -20,37 +20,33 @@ const SPECIALTY_FILTERS = [
   'Neurodiversity & ADHD',
 ];
 
-const ClinicianPortraitSvg: React.FC<{ theme: Counselor['portraitTheme']; name: string }> = ({
+const CounselorPortraitSvg: React.FC<{ theme: Counselor['portraitTheme']; name: string }> = ({
   theme,
   name,
 }) => {
   const palettes = {
-    'amber-sage': { bg: '#E6ECE8', accent: '#1B4332', coat: '#344E41', skin: '#E0B899' },
-    'slate-forest': { bg: '#E5E9EC', accent: '#1E3A3A', coat: '#1D2D44', skin: '#8D5B4C' },
-    'terracotta-stone': { bg: '#EFEAE4', accent: '#2D4A3E', coat: '#4A5D4E', skin: '#E8C5A5' },
-    'indigo-moss': { bg: '#E8EAE6', accent: '#243B35', coat: '#2B3A42', skin: '#6F4536' },
+    'amber-sage': { bg: '#E0F2FE', accent: '#0D9488', coat: '#0F766E', skin: '#E0B899' },
+    'slate-forest': { bg: '#F0FDFA', accent: '#0284C7', coat: '#0369A1', skin: '#8D5B4C' },
+    'terracotta-stone': { bg: '#E0F2FE', accent: '#0D9488', coat: '#0E7490', skin: '#E8C5A5' },
+    'indigo-moss': { bg: '#F0FDFA', accent: '#0284C7', coat: '#0F766E', skin: '#6F4536' },
   };
   const p = palettes[theme];
 
   return (
     <svg
       viewBox="0 0 96 96"
-      className="w-16 h-16 rounded-xl border border-[#141E19]/10 shrink-0"
+      className="w-16 h-16 rounded-2xl border border-[#BAE6FD] shrink-0"
       role="img"
       aria-label={`Portrait illustration of ${name}`}
     >
       <rect width="96" height="96" fill={p.bg} />
-      <circle cx="48" cy="48" r="42" fill={p.accent} fillOpacity="0.06" />
-      {/* Shoulders / Coat */}
+      <circle cx="48" cy="48" r="42" fill={p.accent} fillOpacity="0.08" />
       <path d="M18 96C18 75 30 66 48 66C66 66 78 75 78 96H18Z" fill={p.coat} />
-      {/* Collar */}
-      <path d="M38 66L48 80L58 66" fill="#F8F7F4" />
-      {/* Head */}
+      <path d="M38 66L48 80L58 66" fill="#FFFFFF" />
       <circle cx="48" cy="39" r="16" fill={p.skin} />
-      {/* Hair stylization */}
       <path
         d="M32 38C32 25 40 20 48 20C56 20 64 25 64 38C61 31 55 28 48 28C41 28 35 31 32 38Z"
-        fill="#1E2421"
+        fill="#0F2942"
       />
     </svg>
   );
@@ -127,7 +123,7 @@ export const CounselorDirectory: React.FC<CounselorDirectoryProps> = ({
 
     onBookAppointment(newAppointment);
     setBookingSuccessBanner(
-      `Confirmed session with ${activeCounselor.name} (${activeCounselor.credentials}) for ${selectedSlot}.`
+      `Scheduled your friendly 1-on-1 chat with ${activeCounselor.name} for ${selectedSlot}.`
     );
     setStudentName('');
     setStudentEmail('');
@@ -136,27 +132,29 @@ export const CounselorDirectory: React.FC<CounselorDirectoryProps> = ({
   };
 
   return (
-    <section id="counseling" className="py-14 border-b border-[#141E19]/10">
-      <div className="max-w-[1280px] mx-auto px-6">
-        {/* Header & Specialty Segmented Filter */}
-        <div className="flex flex-col xl:flex-row xl:items-end justify-between gap-5 mb-8">
+    <section id="counseling" className="py-10 sm:py-14">
+      <div className="max-w-[1280px] mx-auto px-4 sm:px-6">
+        {/* Header & Specialty Filter */}
+        <div className="bg-white rounded-3xl p-6 sm:p-8 border border-[#BAE6FD] shadow-[0_12px_32px_-8px_rgba(15,41,66,0.05)] mb-8 flex flex-col xl:flex-row xl:items-end justify-between gap-5">
           <div>
-            <div className="text-xs font-medium text-[#4A5550] mb-2">
-              02. Free 1-on-1 Counseling (In-Person or Video)
+            <div className="inline-flex items-center gap-2 text-xs font-bold text-[#0D9488] bg-[#F0FDFA] border border-[#99F6E4] px-3.5 py-1.5 rounded-full mb-3">
+              <HeartHandshake className="w-3.5 h-3.5" aria-hidden="true" />
+              <span>Free 1-on-1 Campus Support · In-Person or Video</span>
             </div>
-            <h2 className="text-2xl sm:text-3xl font-bold tracking-tight text-[#141E19]">
-              Book a Campus Counselor in 60 Seconds
+            <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#0F2942]">
+              Meet a Friendly Campus Counselor
             </h2>
-            <p className="text-sm text-[#4A5550] mt-2 max-w-2xl">
-              <strong>How to book:</strong> Click an available time button on any counselor card on the left, then enter your name and university <code>.edu</code> email in the form on the right.
+            <p className="text-sm text-[#47627B] mt-2 max-w-2xl leading-relaxed">
+              Pick a time that works for your schedule on the left, then share your name and university{' '}
+              <code>.edu</code> email on the right to reserve a warm, confidential conversation.
             </p>
           </div>
 
           {/* Interactive Filter Controls */}
           <div
             role="group"
-            aria-label="Filter Clinicians by Specialty"
-            className="inline-flex items-center gap-1 p-1 bg-[#EFECE6] rounded-lg border border-[#141E19]/10 overflow-x-auto max-w-full shrink-0"
+            aria-label="Filter Counselors by Focus Area"
+            className="inline-flex items-center gap-1.5 p-1.5 bg-[#F0F9FF] rounded-2xl border border-[#BAE6FD] overflow-x-auto max-w-full shrink-0"
           >
             {SPECIALTY_FILTERS.map((spec) => {
               const active = selectedSpecialtyFilter === spec;
@@ -165,10 +163,10 @@ export const CounselorDirectory: React.FC<CounselorDirectoryProps> = ({
                   key={spec}
                   type="button"
                   onClick={() => onChangeSpecialtyFilter(spec)}
-                  className={`px-3 py-1.5 text-xs font-semibold rounded-md transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
+                  className={`px-3.5 py-2 text-xs font-bold rounded-xl transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
                     active
-                      ? 'bg-white text-[#141E19] shadow-xs'
-                      : 'text-[#4A5550] hover:text-[#141E19]'
+                      ? 'bg-[#0D9488] text-white shadow-xs'
+                      : 'text-[#47627B] hover:text-[#0F2942] hover:bg-white/70'
                   }`}
                 >
                   {spec}
@@ -178,58 +176,58 @@ export const CounselorDirectory: React.FC<CounselorDirectoryProps> = ({
           </div>
         </div>
 
-        {/* 12-Column Split: Clinician Cards (7 cols) + Intake Booking Panel (5 cols) */}
+        {/* 12-Column Split: Counselor Cards (7 cols) + Booking Panel (5 cols) */}
         <div className="grid grid-cols-1 lg:grid-cols-12 gap-8 items-start">
-          {/* Clinician List */}
+          {/* Counselor List */}
           <div className="lg:col-span-7 space-y-4">
             {filteredCounselors.map((counselor) => {
               const isSelected = activeCounselor.id === counselor.id;
               return (
                 <article
                   key={counselor.id}
-                  className={`p-6 rounded-xl bg-white border transition-colors ${
+                  className={`p-6 rounded-3xl bg-white border transition-all ${
                     isSelected
-                      ? 'border-[#1B4332] ring-1 ring-[#1B4332]'
-                      : 'border-[#141E19]/12 hover:border-[#141E19]/30'
+                      ? 'border-[#0D9488] ring-2 ring-[#0D9488]/20 shadow-md'
+                      : 'border-[#BAE6FD] hover:border-[#0284C7]'
                   }`}
                 >
                   <div className="flex items-start gap-4">
-                    <ClinicianPortraitSvg theme={counselor.portraitTheme} name={counselor.name} />
+                    <CounselorPortraitSvg theme={counselor.portraitTheme} name={counselor.name} />
 
                     <div className="flex-1 min-w-0">
-                      {/* Unboxed Metadata Line (Zero-Pill Discipline) */}
-                      <div className="flex flex-wrap items-center gap-2 text-xs text-[#4A5550] mb-1">
-                        <span className="font-semibold text-[#1B4332]">{counselor.specialty}</span>
+                      <div className="flex flex-wrap items-center gap-2 text-xs text-[#47627B] mb-1">
+                        <span className="font-bold text-[#0D9488]">{counselor.specialty}</span>
                         <span aria-hidden="true">·</span>
                         <span>{counselor.languages}</span>
                         <span aria-hidden="true">·</span>
-                        <span className="font-mono tabular-nums">
+                        <span className="font-mono tabular-nums text-[#0284C7]">
                           Wait: ~{counselor.waitDays}d
                         </span>
                       </div>
 
-                      <h3 className="text-lg font-bold text-[#141E19]">
-                        {counselor.name}, <span className="font-normal text-[#4A5550]">{counselor.credentials}</span>
+                      <h3 className="text-lg font-extrabold text-[#0F2942]">
+                        {counselor.name},{' '}
+                        <span className="font-medium text-[#47627B]">{counselor.credentials}</span>
                       </h3>
-                      <p className="text-xs font-medium text-[#4A5550] mt-0.5">
+                      <p className="text-xs font-semibold text-[#47627B] mt-0.5">
                         {counselor.title}
                       </p>
 
-                      <p className="text-sm text-[#141E19]/90 leading-relaxed mt-3">
+                      <p className="text-sm text-[#0F2942]/90 leading-relaxed mt-3">
                         {counselor.bio}
                       </p>
 
-                      <div className="mt-3 text-xs text-[#4A5550] flex items-center gap-1.5">
-                        <MapPin className="w-3.5 h-3.5 text-[#1B4332] shrink-0" aria-hidden="true" />
+                      <div className="mt-3 text-xs text-[#47627B] flex items-center gap-1.5">
+                        <MapPin className="w-3.5 h-3.5 text-[#0D9488] shrink-0" aria-hidden="true" />
                         <span>{counselor.clinicLocation}</span>
                         <span aria-hidden="true">·</span>
                         <span>{counselor.secondaryFocus}</span>
                       </div>
 
                       {/* Available Time Slots */}
-                      <div className="mt-4 pt-4 border-t border-[#141E19]/10 flex flex-wrap items-center justify-between gap-3">
+                      <div className="mt-4 pt-4 border-t border-[#E0F2FE] flex flex-wrap items-center justify-between gap-3">
                         <div className="flex flex-wrap items-center gap-2">
-                          <span className="text-xs font-medium text-[#4A5550]">Next Available:</span>
+                          <span className="text-xs font-semibold text-[#47627B]">Available Times:</span>
                           {counselor.availableSlots.map((slot) => {
                             const slotSelected = isSelected && selectedSlot === slot;
                             return (
@@ -237,10 +235,10 @@ export const CounselorDirectory: React.FC<CounselorDirectoryProps> = ({
                                 key={slot}
                                 type="button"
                                 onClick={() => handleSelectCounselor(counselor, slot)}
-                                className={`px-3 py-1.5 text-xs font-mono tabular-nums rounded-md border transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
+                                className={`px-3.5 py-1.5 text-xs font-mono tabular-nums rounded-xl border transition-colors whitespace-nowrap shrink-0 cursor-pointer ${
                                   slotSelected
-                                    ? 'bg-[#1B4332] text-white border-[#1B4332]'
-                                    : 'bg-[#F8F7F4] text-[#141E19] border-[#141E19]/15 hover:border-[#1B4332]'
+                                    ? 'bg-[#0D9488] text-white border-[#0D9488] font-bold'
+                                    : 'bg-[#F0F9FF] text-[#0F2942] border-[#BAE6FD] hover:border-[#0D9488]'
                                 }`}
                               >
                                 {slot}
@@ -252,9 +250,9 @@ export const CounselorDirectory: React.FC<CounselorDirectoryProps> = ({
                         <button
                           type="button"
                           onClick={() => handleSelectCounselor(counselor)}
-                          className="text-xs font-semibold text-[#1B4332] hover:underline whitespace-nowrap shrink-0 cursor-pointer"
+                          className="text-xs font-bold text-[#0D9488] hover:underline whitespace-nowrap shrink-0 cursor-pointer"
                         >
-                          {isSelected ? 'Selected for Intake' : 'Select Clinician'}
+                          {isSelected ? 'Selected ✓' : 'Choose Counselor'}
                         </button>
                       </div>
                     </div>
@@ -264,18 +262,18 @@ export const CounselorDirectory: React.FC<CounselorDirectoryProps> = ({
             })}
           </div>
 
-          {/* Right Column: Confidential Intake Reservation Form */}
-          <div className="lg:col-span-5 bg-white border border-[#141E19]/15 rounded-xl p-6">
-            <div className="pb-4 border-b border-[#141E19]/10 mb-5">
-              <div className="text-xs font-medium text-[#4A5550]">
-                Confidential Student Intake Reservation
+          {/* Right Column: Confidential Session Reservation Form */}
+          <div className="lg:col-span-5 bg-white border border-[#BAE6FD] rounded-3xl p-6 sm:p-7 shadow-sm">
+            <div className="pb-4 border-b border-[#E0F2FE] mb-5">
+              <div className="text-xs font-bold text-[#0D9488]">
+                Private Student Session Booking
               </div>
-              <h3 className="text-lg font-bold text-[#141E19] mt-0.5">
-                Book Session with {activeCounselor.name}
+              <h3 className="text-lg font-extrabold text-[#0F2942] mt-0.5">
+                Chat with {activeCounselor.name}
               </h3>
-              <p className="text-xs text-[#4A5550] mt-1">
-                {activeCounselor.specialty} · Selected Slot:{' '}
-                <span className="font-mono tabular-nums font-semibold text-[#141E19]">
+              <p className="text-xs text-[#47627B] mt-1">
+                {activeCounselor.specialty} · Time:{' '}
+                <span className="font-mono tabular-nums font-bold text-[#0284C7]">
                   {selectedSlot}
                 </span>
               </p>
@@ -284,9 +282,9 @@ export const CounselorDirectory: React.FC<CounselorDirectoryProps> = ({
             {bookingSuccessBanner && (
               <div
                 role="status"
-                className="mb-5 p-3.5 rounded-lg bg-[#ECFDF5] border border-[#16A34A]/30 text-xs font-medium text-[#065F46] flex items-start gap-2"
+                className="mb-5 p-4 rounded-2xl bg-[#F0FDFA] border border-[#99F6E4] text-xs font-semibold text-[#0F766E] flex items-start gap-2"
               >
-                <Check className="w-4 h-4 shrink-0 mt-0.5" aria-hidden="true" />
+                <Check className="w-4 h-4 shrink-0 mt-0.5 text-[#0D9488]" aria-hidden="true" />
                 <span>{bookingSuccessBanner}</span>
               </div>
             )}
@@ -295,9 +293,9 @@ export const CounselorDirectory: React.FC<CounselorDirectoryProps> = ({
               <div>
                 <label
                   htmlFor="booking-student-name"
-                  className="block text-xs font-semibold text-[#141E19] mb-1.5"
+                  className="block text-xs font-bold text-[#0F2942] mb-1.5"
                 >
-                  Student Full Name
+                  Your Name (or Preferred Name)
                 </label>
                 <input
                   id="booking-student-name"
@@ -305,10 +303,10 @@ export const CounselorDirectory: React.FC<CounselorDirectoryProps> = ({
                   value={studentName}
                   onChange={(e) => setStudentName(e.target.value)}
                   placeholder="e.g., Jordan Vance"
-                  className="w-full px-3.5 py-2.5 text-sm bg-[#F8F7F4] border border-[#141E19]/20 rounded-lg focus:outline-none focus:border-[#1B4332]"
+                  className="w-full px-4 py-2.5 text-sm bg-[#F0F9FF] border border-[#BAE6FD] rounded-2xl text-[#0F2942] focus:outline-none focus:bg-white focus:border-[#0D9488]"
                 />
                 {formErrors.studentName && (
-                  <p role="alert" className="text-xs text-[#991B1B] mt-1 flex items-center gap-1">
+                  <p role="alert" className="text-xs text-[#DC2626] mt-1 flex items-center gap-1">
                     <AlertCircle className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
                     <span>{formErrors.studentName}</span>
                   </p>
@@ -319,7 +317,7 @@ export const CounselorDirectory: React.FC<CounselorDirectoryProps> = ({
                 <div>
                   <label
                     htmlFor="booking-student-email"
-                    className="block text-xs font-semibold text-[#141E19] mb-1.5"
+                    className="block text-xs font-bold text-[#0F2942] mb-1.5"
                   >
                     University Email (.edu)
                   </label>
@@ -329,10 +327,10 @@ export const CounselorDirectory: React.FC<CounselorDirectoryProps> = ({
                     value={studentEmail}
                     onChange={(e) => setStudentEmail(e.target.value)}
                     placeholder="jordan@university.edu"
-                    className="w-full px-3.5 py-2.5 text-sm bg-[#F8F7F4] border border-[#141E19]/20 rounded-lg focus:outline-none focus:border-[#1B4332]"
+                    className="w-full px-4 py-2.5 text-sm bg-[#F0F9FF] border border-[#BAE6FD] rounded-2xl text-[#0F2942] focus:outline-none focus:bg-white focus:border-[#0D9488]"
                   />
                   {formErrors.studentEmail && (
-                    <p role="alert" className="text-xs text-[#991B1B] mt-1">
+                    <p role="alert" className="text-xs text-[#DC2626] mt-1">
                       {formErrors.studentEmail}
                     </p>
                   )}
@@ -341,9 +339,9 @@ export const CounselorDirectory: React.FC<CounselorDirectoryProps> = ({
                 <div>
                   <label
                     htmlFor="booking-student-id"
-                    className="block text-xs font-semibold text-[#141E19] mb-1.5"
+                    className="block text-xs font-bold text-[#0F2942] mb-1.5"
                   >
-                    University Student ID
+                    Student ID
                   </label>
                   <input
                     id="booking-student-id"
@@ -351,10 +349,10 @@ export const CounselorDirectory: React.FC<CounselorDirectoryProps> = ({
                     value={studentId}
                     onChange={(e) => setStudentId(e.target.value)}
                     placeholder="STU-408291"
-                    className="w-full px-3.5 py-2.5 text-sm font-mono tabular-nums bg-[#F8F7F4] border border-[#141E19]/20 rounded-lg focus:outline-none focus:border-[#1B4332]"
+                    className="w-full px-4 py-2.5 text-sm font-mono tabular-nums bg-[#F0F9FF] border border-[#BAE6FD] rounded-2xl text-[#0F2942] focus:outline-none focus:bg-white focus:border-[#0D9488]"
                   />
                   {formErrors.studentId && (
-                    <p role="alert" className="text-xs text-[#991B1B] mt-1">
+                    <p role="alert" className="text-xs text-[#DC2626] mt-1">
                       {formErrors.studentId}
                     </p>
                   )}
@@ -364,39 +362,39 @@ export const CounselorDirectory: React.FC<CounselorDirectoryProps> = ({
               <div>
                 <label
                   htmlFor="booking-modality"
-                  className="block text-xs font-semibold text-[#141E19] mb-1.5"
+                  className="block text-xs font-bold text-[#0F2942] mb-1.5"
                 >
-                  Consultation Modality
+                  How Would You Like to Meet?
                 </label>
                 <select
                   id="booking-modality"
                   value={modality}
                   onChange={(e) => setModality(e.target.value as BookingFormInput['modality'])}
-                  className="w-full px-3.5 py-2.5 text-sm bg-[#F8F7F4] border border-[#141E19]/20 rounded-lg focus:outline-none focus:border-[#1B4332]"
+                  className="w-full px-4 py-2.5 text-sm bg-[#F0F9FF] border border-[#BAE6FD] rounded-2xl text-[#0F2942] focus:outline-none focus:bg-white focus:border-[#0D9488]"
                 >
-                  <option value="In-Person Campus Clinic">In-Person Campus Clinic</option>
-                  <option value="Telehealth Encrypted Video">Telehealth Encrypted Video</option>
-                  <option value="Same-Day Brief Triage">Same-Day Brief Triage</option>
+                  <option value="In-Person Campus Clinic">In-Person Campus Wellness Lounge</option>
+                  <option value="Telehealth Encrypted Video">Private Video Call</option>
+                  <option value="Same-Day Brief Triage">Same-Day Quick Check-In</option>
                 </select>
               </div>
 
               <div>
                 <label
                   htmlFor="booking-reason"
-                  className="block text-xs font-semibold text-[#141E19] mb-1.5"
+                  className="block text-xs font-bold text-[#0F2942] mb-1.5"
                 >
-                  Primary Academic or Personal Focus for Session
+                  What’s on Your Mind?
                 </label>
                 <textarea
                   id="booking-reason"
                   rows={3}
                   value={reason}
                   onChange={(e) => setReason(e.target.value)}
-                  placeholder="Briefly describe what you would like to address (e.g., thesis exhaustion, panic before presentations, sleep disruption)..."
-                  className="w-full px-3.5 py-2.5 text-sm bg-[#F8F7F4] border border-[#141E19]/20 rounded-lg focus:outline-none focus:border-[#1B4332]"
+                  placeholder="Share a few words about what you'd like support with (e.g., exam stress, feeling overwhelmed, trouble sleeping)..."
+                  className="w-full px-4 py-2.5 text-sm bg-[#F0F9FF] border border-[#BAE6FD] rounded-2xl text-[#0F2942] focus:outline-none focus:bg-white focus:border-[#0D9488]"
                 />
                 {formErrors.reason && (
-                  <p role="alert" className="text-xs text-[#991B1B] mt-1">
+                  <p role="alert" className="text-xs text-[#DC2626] mt-1">
                     {formErrors.reason}
                   </p>
                 )}
@@ -404,68 +402,68 @@ export const CounselorDirectory: React.FC<CounselorDirectoryProps> = ({
 
               <button
                 type="submit"
-                className="w-full py-3 px-5 text-sm font-semibold text-white bg-[#1B4332] hover:bg-[#133124] rounded-lg transition-colors cursor-pointer whitespace-nowrap"
+                className="w-full py-3.5 px-5 text-sm font-bold text-white bg-gradient-to-r from-[#0D9488] to-[#0284C7] hover:from-[#0F766E] hover:to-[#0369A1] rounded-2xl transition-all cursor-pointer whitespace-nowrap shadow-sm"
               >
-                Confirm Confidential Appointment
+                Reserve Free 1-on-1 Session
               </button>
             </form>
           </div>
         </div>
 
         {/* Scheduled Counseling Sessions Table */}
-        <div className="mt-10 bg-white border border-[#141E19]/12 rounded-xl overflow-hidden">
-          <div className="px-6 py-4 bg-[#EFECE6]/60 border-b border-[#141E19]/10 flex flex-wrap items-center justify-between gap-4">
+        <div className="mt-10 bg-white border border-[#BAE6FD] rounded-3xl overflow-hidden shadow-xs">
+          <div className="px-6 py-4 bg-[#F0F9FF] border-b border-[#BAE6FD] flex flex-wrap items-center justify-between gap-4">
             <div className="flex items-center gap-2">
-              <Calendar className="w-4 h-4 text-[#1B4332]" aria-hidden="true" />
-              <h3 className="text-sm font-bold text-[#141E19]">
-                My Scheduled Counseling Sessions ({appointments.filter((a) => a.status === 'Confirmed').length} Active)
+              <Calendar className="w-4 h-4 text-[#0D9488]" aria-hidden="true" />
+              <h3 className="text-sm font-extrabold text-[#0F2942]">
+                My Upcoming Sessions ({appointments.filter((a) => a.status === 'Confirmed').length} Active)
               </h3>
             </div>
-            <span className="text-xs text-[#4A5550]">
-              Encrypted calendar sync · Zero cancellation penalty up to 2 hours prior
+            <span className="text-xs text-[#47627B]">
+              Private calendar reminder · Easy rescheduling anytime
             </span>
           </div>
 
           {appointments.length === 0 ? (
             <div className="p-8 text-center">
-              <p className="text-sm text-[#4A5550]">
-                No counseling sessions currently booked. Select a clinician and time slot above to schedule an intake.
+              <p className="text-sm text-[#47627B]">
+                No sessions booked yet. Pick any counselor and time slot above whenever you feel ready.
               </p>
             </div>
           ) : (
             <div className="overflow-x-auto">
               <table className="w-full text-left border-collapse">
                 <thead>
-                  <tr className="border-b border-[#141E19]/10 text-[11px] font-semibold text-[#4A5550] bg-[#F8F7F4]">
-                    <th className="py-3 px-6">Clinician & Specialty</th>
-                    <th className="py-3 px-4">Date & Time</th>
-                    <th className="py-3 px-4">Modality</th>
-                    <th className="py-3 px-4">Student ID & Email</th>
+                  <tr className="border-b border-[#E0F2FE] text-[11px] font-bold text-[#47627B] bg-[#F8FAFC]">
+                    <th className="py-3 px-6">Counselor &amp; Focus</th>
+                    <th className="py-3 px-4">Date &amp; Time</th>
+                    <th className="py-3 px-4">Format</th>
+                    <th className="py-3 px-4">Student Details</th>
                     <th className="py-3 px-4">Status</th>
                     <th className="py-3 px-6 text-right">Action</th>
                   </tr>
                 </thead>
-                <tbody className="divide-y divide-[#141E19]/10 text-xs">
+                <tbody className="divide-y divide-[#E0F2FE] text-xs">
                   {appointments.map((apt) => (
-                    <tr key={apt.id} className="hover:bg-[#F8F7F4]/60">
+                    <tr key={apt.id} className="hover:bg-[#F0F9FF]/60">
                       <td className="py-3.5 px-6">
-                        <div className="font-semibold text-[#141E19]">
+                        <div className="font-bold text-[#0F2942]">
                           {apt.counselorName}, {apt.credentials}
                         </div>
-                        <div className="text-[#4A5550] mt-0.5">{apt.specialty}</div>
+                        <div className="text-[#47627B] mt-0.5">{apt.specialty}</div>
                       </td>
-                      <td className="py-3.5 px-4 font-mono tabular-nums text-[#141E19]">
+                      <td className="py-3.5 px-4 font-mono tabular-nums text-[#0F2942]">
                         {apt.slot}
                       </td>
-                      <td className="py-3.5 px-4 text-[#4A5550]">{apt.modality}</td>
-                      <td className="py-3.5 px-4 font-mono tabular-nums text-[#4A5550]">
+                      <td className="py-3.5 px-4 text-[#47627B]">{apt.modality}</td>
+                      <td className="py-3.5 px-4 font-mono tabular-nums text-[#47627B]">
                         {apt.studentId} · {apt.studentEmail}
                       </td>
-                      <td className="py-3.5 px-4 font-medium">
+                      <td className="py-3.5 px-4 font-bold">
                         {apt.status === 'Confirmed' ? (
-                          <span className="text-[#16A34A]">Confirmed</span>
+                          <span className="text-[#0D9488]">Confirmed</span>
                         ) : (
-                          <span className="text-[#991B1B]">Cancelled</span>
+                          <span className="text-[#64748B]">Cancelled</span>
                         )}
                       </td>
                       <td className="py-3.5 px-6 text-right">
@@ -474,13 +472,13 @@ export const CounselorDirectory: React.FC<CounselorDirectoryProps> = ({
                             type="button"
                             onClick={() => onCancelAppointment(apt.id)}
                             aria-label={`Cancel session with ${apt.counselorName} on ${apt.slot}`}
-                            className="inline-flex items-center gap-1 text-xs font-medium text-[#991B1B] hover:underline whitespace-nowrap shrink-0 cursor-pointer"
+                            className="inline-flex items-center gap-1 text-xs font-semibold text-[#0284C7] hover:underline whitespace-nowrap shrink-0 cursor-pointer"
                           >
                             <XCircle className="w-3.5 h-3.5" aria-hidden="true" />
-                            <span>Cancel Session</span>
+                            <span>Cancel</span>
                           </button>
                         ) : (
-                          <span className="text-[#4A5550]">Cancelled</span>
+                          <span className="text-[#64748B]">Cancelled</span>
                         )}
                       </td>
                     </tr>

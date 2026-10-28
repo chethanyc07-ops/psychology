@@ -378,3 +378,88 @@ export function validateCbtEntry(input: CbtThoughtRecordInput): { valid: true } 
   }
   return { valid: true };
 }
+
+export type EmpathyReactionType = 'hug' | 'relate' | 'rooting';
+
+export interface EmpathyReactionCounts {
+  hugs: number;
+  relates: number;
+  rooting: number;
+  userHugged?: boolean;
+  userRelated?: boolean;
+  userRooted?: boolean;
+}
+
+export interface EmpathySummary {
+  totalSupportCount: number;
+  activeReactions: EmpathyReactionType[];
+  supportiveFeedbackText: string | null;
+}
+
+export function toggleEmpathyReaction<T extends EmpathyReactionCounts>(
+  post: T,
+  type: EmpathyReactionType
+): T {
+  if (type === 'hug') {
+    const nextState = !post.userHugged;
+    return {
+      ...post,
+      userHugged: nextState,
+      hugs: Math.max(0, post.hugs + (nextState ? 1 : -1)),
+    };
+  }
+  if (type === 'relate') {
+    const nextState = !post.userRelated;
+    return {
+      ...post,
+      userRelated: nextState,
+      relates: Math.max(0, post.relates + (nextState ? 1 : -1)),
+    };
+  }
+  const nextState = !post.userRooted;
+  return {
+    ...post,
+    userRooted: nextState,
+    rooting: Math.max(0, post.rooting + (nextState ? 1 : -1)),
+  };
+}
+
+export function computePostEmpathySummary(
+  post: EmpathyReactionCounts,
+  authorHandle?: string
+): EmpathySummary {
+  const totalSupportCount = post.hugs + post.relates + post.rooting;
+  const activeReactions: EmpathyReactionType[] = [];
+  if (post.userHugged) activeReactions.push('hug');
+  if (post.userRelated) activeReactions.push('relate');
+  if (post.userRooted) activeReactions.push('rooting');
+
+  if (activeReactions.length === 0) {
+    return {
+      totalSupportCount,
+      activeReactions,
+      supportiveFeedbackText: null,
+    };
+  }
+
+  const labels: string[] = [];
+  if (post.userHugged) labels.push('sent a warm hug');
+  if (post.userRelated) labels.push('shared that you relate');
+  if (post.userRooted) labels.push('are rooting for them');
+
+  const joined =
+    labels.length === 1
+      ? labels[0]
+      : labels.length === 2
+      ? `${labels[0]} and ${labels[1]}`
+      : `${labels[0]}, ${labels[1]}, and ${labels[2]}`;
+
+  const target = authorHandle ? ` — ${authorHandle} knows they aren't alone.` : '.';
+
+  return {
+    totalSupportCount,
+    activeReactions,
+    supportiveFeedbackText: `You ${joined}${target}`,
+  };
+}
+

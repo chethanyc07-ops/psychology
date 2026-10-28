@@ -153,21 +153,11 @@ export const AssessmentModule: React.FC<AssessmentModuleProps> = ({
 
   const [selectedDayForDetail, setSelectedDayForDetail] = useState<DayMoodStreakItem | null>(null);
 
-  // Interactive support modals for Result Card actions
   const [isBreathingModalOpen, setIsBreathingModalOpen] = useState<boolean>(false);
   const [breathingPhase, setBreathingPhase] = useState<'Inhale (4s)' | 'Hold (4s)' | 'Exhale (4s)'>(
     'Inhale (4s)'
   );
   const [breathingSecondsLeft, setBreathingSecondsLeft] = useState<number>(180);
-
-  const [isAiBotOpen, setIsAiBotOpen] = useState<boolean>(false);
-  const [chatInput, setChatInput] = useState<string>('');
-  const [chatMessages, setChatMessages] = useState<{ sender: 'ai' | 'student'; text: string }[]>([
-    {
-      sender: 'ai',
-      text: "Hi there. I'm your confidential 24/7 Campus Companion. We can unpack what came up in your check-in at your own pace—no judgment, no academic records. What feels heaviest right now?",
-    },
-  ]);
 
   useEffect(() => {
     if (!isBreathingModalOpen) return;
@@ -324,26 +314,6 @@ export const AssessmentModule: React.FC<AssessmentModuleProps> = ({
     setStreakSavedMessage(false);
   };
 
-  const handleSendChatMessage = (e: React.FormEvent) => {
-    e.preventDefault();
-    const trimmed = chatInput.trim();
-    if (!trimmed) return;
-
-    const studentMsg = { sender: 'student' as const, text: trimmed };
-    const triggerContext =
-      selectedTriggers.length > 0
-        ? `especially around ${selectedTriggers.map((t) => t.replace(/^[^\s]+\s/, '')).join(' and ')}`
-        : 'with everything on your plate';
-
-    const replyText =
-      totalScore >= 4
-        ? `Thank you for sharing that honestly. Carrying that kind of pressure ${triggerContext} is genuinely exhausting. Let's break it down into one tiny, manageable piece for the next 15 minutes—what is one thing you can give yourself permission to pause tonight?`
-        : `I hear you. Even when you're managing overall, dealing with thoughts like that ${triggerContext} takes energy. Would you like a quick 2-minute cognitive reframe or a study grounding tip?`;
-
-    setChatMessages((prev) => [...prev, studentMsg, { sender: 'ai', text: replyText }]);
-    setChatInput('');
-  };
-
   const progressWidthClass = isSubmitted
     ? 'w-full'
     : completedStepsCount === 0
@@ -361,12 +331,12 @@ export const AssessmentModule: React.FC<AssessmentModuleProps> = ({
       className="py-10 sm:py-14 px-4 sm:px-8 max-w-[1080px] mx-auto"
     >
       {/* 1. Section Header & Disclaimer Strip */}
-      <div className="bg-white/85 backdrop-blur-xl border border-[#141E19]/10 rounded-3xl p-6 sm:p-8 shadow-[0_12px_36px_rgba(20,30,25,0.05)] mb-8">
+      <div className="bg-white/95 backdrop-blur-xl border border-[#BAE6FD] rounded-3xl p-6 sm:p-8 shadow-[0_12px_36px_rgba(15,41,66,0.05)] mb-8">
         <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
-          <div className="inline-flex flex-wrap items-center gap-2 text-xs font-semibold text-[#1B4332] bg-[#E8F3EE] border border-[#1B4332]/15 px-3.5 py-1.5 rounded-xl">
+          <div className="inline-flex flex-wrap items-center gap-2 text-xs font-semibold text-[#0D9488] bg-[#F0FDFA] border border-[#99F6E4] px-3.5 py-1.5 rounded-xl">
             <Clock className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
             <span>⏱️ Takes less than 2 minutes</span>
-            <span aria-hidden="true" className="text-[#1B4332]/40">
+            <span aria-hidden="true" className="text-[#0D9488]/40">
               |
             </span>
             <Lock className="w-3.5 h-3.5 shrink-0" aria-hidden="true" />
@@ -376,29 +346,29 @@ export const AssessmentModule: React.FC<AssessmentModuleProps> = ({
           <button
             type="button"
             onClick={() => onSelectSection('wellness-log')}
-            className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#9A5B13] bg-[#FEF3C7] hover:bg-[#FDE68A] border border-[#F59E0B]/30 px-3 py-1.5 rounded-xl transition-colors cursor-pointer"
+            className="inline-flex items-center gap-1.5 text-xs font-semibold text-[#0284C7] bg-[#F0F9FF] hover:bg-[#E0F2FE] border border-[#BAE6FD] px-3.5 py-1.5 rounded-xl transition-colors cursor-pointer"
           >
-            <Flame className="w-3.5 h-3.5 text-[#D97706]" aria-hidden="true" />
+            <Flame className="w-3.5 h-3.5 text-[#0D9488]" aria-hidden="true" />
             <span>7-Day Mood &amp; Sleep Streak &rarr;</span>
           </button>
         </div>
 
-        <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#141E19]">
+        <h2 className="text-2xl sm:text-3xl font-extrabold tracking-tight text-[#0F2942]">
           2-Minute Mind &amp; Mood Check-In
         </h2>
-        <p className="text-sm sm:text-base text-[#4A5550] mt-2 max-w-2xl leading-relaxed">
+        <p className="text-sm sm:text-base text-[#47627B] mt-2 max-w-2xl leading-relaxed">
           Pause for two minutes. Answer 4 quick prompts to understand your current stress level and
           get instant tools tailored to how you feel today.
         </p>
 
         {/* Visual Step Indicator Progress Bar (Step 1 of 4 -> 25% — 50% — 75% — Done) */}
-        <div className="mt-6 pt-5 border-t border-[#141E19]/10">
-          <div className="flex flex-wrap items-center justify-between gap-2 text-xs font-semibold text-[#141E19] mb-2.5">
+        <div className="mt-6 pt-5 border-t border-[#E0F2FE]">
+          <div className="flex flex-wrap items-center justify-between gap-2 text-xs font-semibold text-[#0F2942] mb-2.5">
             <span className="inline-flex items-center gap-2">
-              <span className="px-2.5 py-0.5 rounded-md bg-[#1B4332] text-white font-mono">
+              <span className="px-2.5 py-0.5 rounded-md bg-[#0D9488] text-white font-mono">
                 {isSubmitted ? 'Completed' : `Step ${currentStepNumber} of 4`}
               </span>
-              <span className="text-[#4A5550] font-medium">
+              <span className="text-[#47627B] font-medium">
                 {isSubmitted
                   ? 'All 4 prompts complete — see your personalized card below'
                   : '25% — 50% — 75% — Done'}
@@ -408,7 +378,7 @@ export const AssessmentModule: React.FC<AssessmentModuleProps> = ({
             <button
               type="button"
               onClick={handleResetAll}
-              className="inline-flex items-center gap-1.5 text-xs font-medium text-[#4A5550] hover:text-[#141E19] transition-colors cursor-pointer"
+              className="inline-flex items-center gap-1.5 text-xs font-medium text-[#47627B] hover:text-[#0F2942] transition-colors cursor-pointer"
             >
               <RotateCcw className="w-3.5 h-3.5" aria-hidden="true" />
               <span>Reset Check-In</span>
@@ -416,9 +386,9 @@ export const AssessmentModule: React.FC<AssessmentModuleProps> = ({
           </div>
 
           {/* Progress Track */}
-          <div className="w-full h-2.5 bg-[#EFECE6] rounded-full overflow-hidden p-0.5 border border-[#141E19]/10">
+          <div className="w-full h-2.5 bg-[#E0F2FE] rounded-full overflow-hidden p-0.5 border border-[#BAE6FD]">
             <div
-              className={`h-full rounded-full bg-gradient-to-r from-[#1B4332] to-[#2D6A4F] transition-all duration-500 ${progressWidthClass}`}
+              className={`h-full rounded-full bg-gradient-to-r from-[#0D9488] to-[#0284C7] transition-all duration-500 ${progressWidthClass}`}
             />
           </div>
 
@@ -427,13 +397,13 @@ export const AssessmentModule: React.FC<AssessmentModuleProps> = ({
             <div
               className={`flex items-center gap-1.5 ${
                 currentStepNumber >= 1 || step1Complete
-                  ? 'text-[#1B4332] font-bold'
-                  : 'text-[#4A5550]'
+                  ? 'text-[#0D9488] font-bold'
+                  : 'text-[#47627B]'
               }`}
             >
               <span
                 className={`w-2 h-2 rounded-full ${
-                  step1Complete ? 'bg-[#1B4332]' : 'bg-[#1B4332]/40'
+                  step1Complete ? 'bg-[#0D9488]' : 'bg-[#0D9488]/40'
                 }`}
               />
               <span>25% · Mood &amp; Battery</span>
@@ -441,13 +411,13 @@ export const AssessmentModule: React.FC<AssessmentModuleProps> = ({
             <div
               className={`flex items-center gap-1.5 ${
                 currentStepNumber >= 2 || step2Complete
-                  ? 'text-[#1B4332] font-bold'
-                  : 'text-[#4A5550]'
+                  ? 'text-[#0D9488] font-bold'
+                  : 'text-[#47627B]'
               }`}
             >
               <span
                 className={`w-2 h-2 rounded-full ${
-                  step2Complete ? 'bg-[#1B4332]' : 'bg-[#141E19]/20'
+                  step2Complete ? 'bg-[#0D9488]' : 'bg-[#BAE6FD]'
                 }`}
               />
               <span>50% · Triggers</span>
@@ -455,25 +425,25 @@ export const AssessmentModule: React.FC<AssessmentModuleProps> = ({
             <div
               className={`flex items-center gap-1.5 ${
                 currentStepNumber >= 3 || step3Complete
-                  ? 'text-[#1B4332] font-bold'
-                  : 'text-[#4A5550]'
+                  ? 'text-[#0D9488] font-bold'
+                  : 'text-[#47627B]'
               }`}
             >
               <span
                 className={`w-2 h-2 rounded-full ${
-                  step3Complete ? 'bg-[#1B4332]' : 'bg-[#141E19]/20'
+                  step3Complete ? 'bg-[#0D9488]' : 'bg-[#BAE6FD]'
                 }`}
               />
-              <span>75% · Rapid Screen</span>
+              <span>75% · Quick Questions</span>
             </div>
             <div
               className={`flex items-center justify-end gap-1.5 ${
-                isSubmitted || step4Complete ? 'text-[#1B4332] font-bold' : 'text-[#4A5550]'
+                isSubmitted || step4Complete ? 'text-[#0D9488] font-bold' : 'text-[#47627B]'
               }`}
             >
               <span
                 className={`w-2 h-2 rounded-full ${
-                  isSubmitted ? 'bg-[#16A34A]' : 'bg-[#141E19]/20'
+                  isSubmitted ? 'bg-[#0D9488]' : 'bg-[#BAE6FD]'
                 }`}
               />
               <span>Done · Summary</span>
@@ -484,18 +454,18 @@ export const AssessmentModule: React.FC<AssessmentModuleProps> = ({
 
       <form onSubmit={handleSubmitCheckIn} className="space-y-6">
         {/* 2. Step 1: Mood & Social Battery Sliders (30 Seconds) */}
-        <div className="bg-white/90 backdrop-blur-xl border border-[#141E19]/10 rounded-3xl p-6 sm:p-8 shadow-xs">
-          <div className="flex flex-wrap items-center justify-between gap-2 pb-4 mb-6 border-b border-[#141E19]/10">
+        <div className="bg-white/95 backdrop-blur-xl border border-[#BAE6FD] rounded-3xl p-6 sm:p-8 shadow-xs">
+          <div className="flex flex-wrap items-center justify-between gap-2 pb-4 mb-6 border-b border-[#E0F2FE]">
             <div>
-              <span className="text-xs font-mono uppercase tracking-wider font-bold text-[#1B4332]">
+              <span className="text-xs font-mono uppercase tracking-wider font-bold text-[#0D9488]">
                 Step 1 of 4 · ~30 Seconds
               </span>
-              <h3 className="text-lg sm:text-xl font-bold text-[#141E19] mt-0.5">
+              <h3 className="text-lg sm:text-xl font-bold text-[#0F2942] mt-0.5">
                 Mood &amp; Social Battery Sliders
               </h3>
             </div>
             {step1Complete && (
-              <span className="inline-flex items-center gap-1 text-xs font-semibold text-[#166534] bg-[#DCFCE7] px-2.5 py-1 rounded-lg">
+              <span className="inline-flex items-center gap-1 text-xs font-semibold text-[#0F766E] bg-[#F0FDFA] border border-[#99F6E4] px-2.5 py-1 rounded-lg">
                 <CheckCircle2 className="w-3.5 h-3.5" aria-hidden="true" />
                 <span>25% Complete</span>
               </span>
@@ -505,7 +475,7 @@ export const AssessmentModule: React.FC<AssessmentModuleProps> = ({
           <div className="space-y-7">
             {/* Prompt 1: Mood Selector */}
             <div>
-              <label className="block text-sm sm:text-base font-bold text-[#141E19] mb-3">
+              <label className="block text-sm sm:text-base font-bold text-[#0F2942] mb-3">
                 Overall, how does your mind feel today?
               </label>
               <div
@@ -524,8 +494,8 @@ export const AssessmentModule: React.FC<AssessmentModuleProps> = ({
                       onClick={() => setSelectedMood(option.fullText)}
                       className={`flex flex-col items-center justify-center gap-2 p-4 rounded-2xl border text-center transition-all cursor-pointer ${
                         isSelected
-                          ? 'bg-[#1B4332] text-white border-[#1B4332] shadow-md scale-[1.02]'
-                          : 'bg-[#F8F7F4] hover:bg-white text-[#141E19] border-[#141E19]/12 hover:border-[#1B4332]/40'
+                          ? 'bg-[#0D9488] text-white border-[#0D9488] shadow-md scale-[1.02]'
+                          : 'bg-[#F0F9FF] hover:bg-[#E0F2FE] text-[#0F2942] border-[#BAE6FD]'
                       }`}
                     >
                       <span className="text-2xl sm:text-3xl" aria-hidden="true">
@@ -545,11 +515,11 @@ export const AssessmentModule: React.FC<AssessmentModuleProps> = ({
               <div className="flex flex-wrap items-center justify-between gap-2 mb-3">
                 <label
                   htmlFor="mental-social-battery-slider"
-                  className="text-sm sm:text-base font-bold text-[#141E19]"
+                  className="text-sm sm:text-base font-bold text-[#0F2942]"
                 >
                   Where is your mental/social battery right now?
                 </label>
-                <span className="font-mono text-sm font-extrabold text-[#1B4332] bg-[#E8F3EE] px-3 py-1 rounded-lg border border-[#1B4332]/15">
+                <span className="font-mono text-sm font-extrabold text-[#0D9488] bg-[#F0FDFA] px-3 py-1 rounded-lg border border-[#99F6E4]">
                   {batteryLevel}%{' '}
                   {batteryLevel <= 25
                     ? '· Drained'
@@ -561,7 +531,7 @@ export const AssessmentModule: React.FC<AssessmentModuleProps> = ({
                 </span>
               </div>
 
-              <div className="bg-[#F8F7F4] p-4 sm:p-5 rounded-2xl border border-[#141E19]/10">
+              <div className="bg-[#F0F9FF] p-4 sm:p-5 rounded-2xl border border-[#BAE6FD]">
                 <input
                   id="mental-social-battery-slider"
                   type="range"
@@ -574,11 +544,11 @@ export const AssessmentModule: React.FC<AssessmentModuleProps> = ({
                     setHasTouchedBattery(true);
                   }}
                   aria-label="Where is your mental/social battery right now?"
-                  className="w-full h-2.5 bg-[#DFDCD4] rounded-lg appearance-none cursor-pointer accent-[#1B4332]"
+                  className="w-full h-2.5 bg-[#BAE6FD] rounded-lg appearance-none cursor-pointer accent-[#0D9488]"
                 />
-                <div className="flex items-center justify-between text-xs font-semibold text-[#4A5550] mt-2.5">
+                <div className="flex items-center justify-between text-xs font-semibold text-[#47627B] mt-2.5">
                   <span>0% Drained</span>
-                  <span className="hidden sm:inline text-[#4A5550]/75">50% Half-Tank</span>
+                  <span className="hidden sm:inline text-[#47627B]/80">50% Half-Tank</span>
                   <span>100% Fully Charged</span>
                 </div>
               </div>
@@ -587,22 +557,22 @@ export const AssessmentModule: React.FC<AssessmentModuleProps> = ({
         </div>
 
         {/* 3. Step 2: College Stress Trigger Tags (20 Seconds) */}
-        <div className="bg-white/90 backdrop-blur-xl border border-[#141E19]/10 rounded-3xl p-6 sm:p-8 shadow-xs">
-          <div className="flex flex-wrap items-center justify-between gap-2 pb-4 mb-5 border-b border-[#141E19]/10">
+        <div className="bg-white/95 backdrop-blur-xl border border-[#BAE6FD] rounded-3xl p-6 sm:p-8 shadow-xs">
+          <div className="flex flex-wrap items-center justify-between gap-2 pb-4 mb-5 border-b border-[#E0F2FE]">
             <div>
-              <span className="text-xs font-mono uppercase tracking-wider font-bold text-[#1B4332]">
+              <span className="text-xs font-mono uppercase tracking-wider font-bold text-[#0D9488]">
                 Step 2 of 4 · ~20 Seconds
               </span>
-              <h3 className="text-lg sm:text-xl font-bold text-[#141E19] mt-0.5">
-                College Stress Trigger Tags
+              <h3 className="text-lg sm:text-xl font-bold text-[#0F2942] mt-0.5">
+                Campus Life Topics on Your Mind
               </h3>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-xs font-mono font-semibold text-[#4A5550] bg-[#F8F7F4] px-3 py-1 rounded-lg border border-[#141E19]/10">
+              <span className="text-xs font-mono font-semibold text-[#0284C7] bg-[#F0F9FF] px-3 py-1 rounded-lg border border-[#BAE6FD]">
                 Selected: {selectedTriggers.length} / 3
               </span>
               {step2Complete && (
-                <span className="inline-flex items-center gap-1 text-xs font-semibold text-[#166534] bg-[#DCFCE7] px-2.5 py-1 rounded-lg">
+                <span className="inline-flex items-center gap-1 text-xs font-semibold text-[#0F766E] bg-[#F0FDFA] border border-[#99F6E4] px-2.5 py-1 rounded-lg">
                   <CheckCircle2 className="w-3.5 h-3.5" aria-hidden="true" />
                   <span>50% Complete</span>
                 </span>
@@ -610,7 +580,7 @@ export const AssessmentModule: React.FC<AssessmentModuleProps> = ({
             </div>
           </div>
 
-          <p className="text-sm sm:text-base font-bold text-[#141E19] mb-4">
+          <p className="text-sm sm:text-base font-bold text-[#0F2942] mb-4">
             What is taking up the most space in your head right now? (Select up to 3)
           </p>
 
@@ -629,13 +599,13 @@ export const AssessmentModule: React.FC<AssessmentModuleProps> = ({
                   onClick={() => handleToggleTrigger(tag)}
                   className={`flex items-center justify-between gap-2 px-4 py-3.5 rounded-2xl border text-left text-xs sm:text-sm font-semibold transition-all cursor-pointer ${
                     isSelected
-                      ? 'bg-[#1B4332] text-white border-[#1B4332] shadow-sm'
-                      : 'bg-[#F8F7F4] hover:bg-white text-[#141E19] border-[#141E19]/12 hover:border-[#1B4332]/40'
+                      ? 'bg-[#0D9488] text-white border-[#0D9488] shadow-sm'
+                      : 'bg-[#F0F9FF] hover:bg-[#E0F2FE] text-[#0F2942] border-[#BAE6FD]'
                   }`}
                 >
                   <span className="leading-snug">{tag}</span>
                   {isSelected && (
-                    <CheckCircle2 className="w-4 h-4 shrink-0 text-[#A7F3D0]" aria-hidden="true" />
+                    <CheckCircle2 className="w-4 h-4 shrink-0 text-[#CCFBF1]" aria-hidden="true" />
                   )}
                 </button>
               );
@@ -643,30 +613,30 @@ export const AssessmentModule: React.FC<AssessmentModuleProps> = ({
           </div>
 
           {triggerLimitNotice && (
-            <p className="mt-3 text-xs font-semibold text-[#9A5B13] bg-[#FEF3C7] border border-[#F59E0B]/30 px-3.5 py-2 rounded-xl inline-flex items-center gap-2">
-              <AlertCircle className="w-4 h-4 shrink-0 text-[#D97706]" aria-hidden="true" />
-              <span>You can select up to 3 top triggers. Tap an active tag to deselect it first.</span>
+            <p className="mt-3 text-xs font-semibold text-[#0284C7] bg-[#F0F9FF] border border-[#BAE6FD] px-3.5 py-2 rounded-xl inline-flex items-center gap-2">
+              <AlertCircle className="w-4 h-4 shrink-0 text-[#0284C7]" aria-hidden="true" />
+              <span>You can select up to 3 top topics. Tap an active tag to deselect it first.</span>
             </p>
           )}
         </div>
 
-        {/* 4. Step 3: The 4-Question Rapid Screening (45 Seconds) */}
-        <div className="bg-white/90 backdrop-blur-xl border border-[#141E19]/10 rounded-3xl p-6 sm:p-8 shadow-xs">
-          <div className="flex flex-wrap items-center justify-between gap-2 pb-4 mb-5 border-b border-[#141E19]/10">
+        {/* 4. Step 3: The 4-Question Reflection (45 Seconds) */}
+        <div className="bg-white/95 backdrop-blur-xl border border-[#BAE6FD] rounded-3xl p-6 sm:p-8 shadow-xs">
+          <div className="flex flex-wrap items-center justify-between gap-2 pb-4 mb-5 border-b border-[#E0F2FE]">
             <div>
-              <span className="text-xs font-mono uppercase tracking-wider font-bold text-[#1B4332]">
-                Step 3 of 4 · ~45 Seconds · PHQ-4 + Academic Burnout
+              <span className="text-xs font-mono uppercase tracking-wider font-bold text-[#0D9488]">
+                Step 3 of 4 · ~45 Seconds · Gentle Reflection
               </span>
-              <h3 className="text-lg sm:text-xl font-bold text-[#141E19] mt-0.5">
-                The 4-Question Rapid Screening
+              <h3 className="text-lg sm:text-xl font-bold text-[#0F2942] mt-0.5">
+                4 Quick Questions About Your Past Two Weeks
               </h3>
             </div>
             <div className="flex items-center gap-2">
-              <span className="text-xs font-mono font-semibold text-[#4A5550] bg-[#F8F7F4] px-3 py-1 rounded-lg border border-[#141E19]/10">
+              <span className="text-xs font-mono font-semibold text-[#0284C7] bg-[#F0F9FF] px-3 py-1 rounded-lg border border-[#BAE6FD]">
                 Answered: {step3AnsweredCount} / 4
               </span>
               {step3Complete && (
-                <span className="inline-flex items-center gap-1 text-xs font-semibold text-[#166534] bg-[#DCFCE7] px-2.5 py-1 rounded-lg">
+                <span className="inline-flex items-center gap-1 text-xs font-semibold text-[#0F766E] bg-[#F0FDFA] border border-[#99F6E4] px-2.5 py-1 rounded-lg">
                   <CheckCircle2 className="w-3.5 h-3.5" aria-hidden="true" />
                   <span>75% Complete</span>
                 </span>
@@ -674,23 +644,23 @@ export const AssessmentModule: React.FC<AssessmentModuleProps> = ({
             </div>
           </div>
 
-          <p className="text-sm sm:text-base font-bold text-[#141E19] mb-5">
+          <p className="text-sm sm:text-base font-bold text-[#0F2942] mb-5">
             Over the last 2 weeks, how often have you been bothered by the following?
           </p>
 
-          <div className="divide-y divide-[#141E19]/10 border border-[#141E19]/10 rounded-2xl overflow-hidden bg-[#F8F7F4]/50">
+          <div className="divide-y divide-[#E0F2FE] border border-[#BAE6FD] rounded-2xl overflow-hidden bg-[#F0F9FF]/40">
             {RAPID_SCREENING_QUESTIONS.map((q, qIdx) => {
               const currentVal = screeningAnswers[qIdx];
               return (
                 <div
                   key={q.id}
-                  className="p-4 sm:p-5 flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-white/70 hover:bg-white transition-colors"
+                  className="p-4 sm:p-5 flex flex-col lg:flex-row lg:items-center justify-between gap-4 bg-white/80 hover:bg-white transition-colors"
                 >
                   <div className="max-w-lg">
-                    <div className="inline-flex items-center gap-2 text-xs font-mono font-bold text-[#1B4332] mb-1">
-                      <span className="px-2 py-0.5 rounded bg-[#E8F3EE]">{q.numberLabel}</span>
+                    <div className="inline-flex items-center gap-2 text-xs font-mono font-bold text-[#0D9488] mb-1">
+                      <span className="px-2 py-0.5 rounded bg-[#F0FDFA] border border-[#99F6E4]">{q.numberLabel}</span>
                     </div>
-                    <p className="text-sm sm:text-base font-semibold text-[#141E19] leading-snug">
+                    <p className="text-sm sm:text-base font-semibold text-[#0F2942] leading-snug">
                       {q.question}
                     </p>
                   </div>
@@ -711,14 +681,14 @@ export const AssessmentModule: React.FC<AssessmentModuleProps> = ({
                           onClick={() => handleSelectAnswer(qIdx, opt.points)}
                           className={`px-3.5 py-2.5 rounded-xl text-left border transition-all cursor-pointer ${
                             isSelected
-                              ? 'bg-[#1B4332] text-white border-[#1B4332] shadow-xs'
-                              : 'bg-[#F8F7F4] hover:bg-white text-[#141E19] border-[#141E19]/12 hover:border-[#1B4332]/40'
+                              ? 'bg-[#0D9488] text-white border-[#0D9488] shadow-xs'
+                              : 'bg-[#F0F9FF] hover:bg-[#E0F2FE] text-[#0F2942] border-[#BAE6FD]'
                           }`}
                         >
                           <div className="text-xs font-bold whitespace-nowrap">{opt.label}</div>
                           <div
                             className={`text-[11px] font-mono mt-0.5 ${
-                              isSelected ? 'text-[#A7F3D0]' : 'text-[#4A5550]'
+                              isSelected ? 'text-[#CCFBF1]' : 'text-[#47627B]'
                             }`}
                           >
                             ({opt.points} {opt.points === 1 ? 'pt' : 'pts'})
@@ -734,24 +704,24 @@ export const AssessmentModule: React.FC<AssessmentModuleProps> = ({
         </div>
 
         {/* 5. Step 4: "One-Line Brain Dump" (25 Seconds — Optional) */}
-        <div className="bg-white/90 backdrop-blur-xl border border-[#141E19]/10 rounded-3xl p-6 sm:p-8 shadow-xs">
-          <div className="flex flex-wrap items-center justify-between gap-2 pb-4 mb-5 border-b border-[#141E19]/10">
+        <div className="bg-white/95 backdrop-blur-xl border border-[#BAE6FD] rounded-3xl p-6 sm:p-8 shadow-xs">
+          <div className="flex flex-wrap items-center justify-between gap-2 pb-4 mb-5 border-b border-[#E0F2FE]">
             <div>
-              <span className="text-xs font-mono uppercase tracking-wider font-bold text-[#1B4332]">
+              <span className="text-xs font-mono uppercase tracking-wider font-bold text-[#0D9488]">
                 Step 4 of 4 · ~25 Seconds · Optional
               </span>
-              <h3 className="text-lg sm:text-xl font-bold text-[#141E19] mt-0.5">
+              <h3 className="text-lg sm:text-xl font-bold text-[#0F2942] mt-0.5">
                 &ldquo;One-Line Brain Dump&rdquo;
               </h3>
             </div>
-            <span className="text-xs font-medium text-[#4A5550] bg-[#F8F7F4] px-3 py-1 rounded-lg border border-[#141E19]/10">
+            <span className="text-xs font-medium text-[#0284C7] bg-[#F0F9FF] px-3 py-1 rounded-lg border border-[#BAE6FD]">
               🔒 Never leaves your browser
             </span>
           </div>
 
           <label
             htmlFor="one-line-brain-dump"
-            className="block text-sm sm:text-base font-bold text-[#141E19] mb-3"
+            className="block text-sm sm:text-base font-bold text-[#0F2942] mb-3"
           >
             Want to get one thought off your chest? (Optional &amp; private)
           </label>
@@ -762,26 +732,26 @@ export const AssessmentModule: React.FC<AssessmentModuleProps> = ({
             value={brainDump}
             onChange={(e) => setBrainDump(e.target.value)}
             placeholder="e.g., I have 3 assignments due tomorrow and I can't focus..."
-            className="w-full px-4 py-3.5 rounded-2xl bg-[#F8F7F4] border border-[#141E19]/15 text-sm sm:text-base text-[#141E19] placeholder:text-[#4A5550]/65 focus:outline-none focus:bg-white focus:border-[#1B4332] transition-colors"
+            className="w-full px-4 py-3.5 rounded-2xl bg-[#F0F9FF] border border-[#BAE6FD] text-sm sm:text-base text-[#0F2942] placeholder:text-[#47627B]/65 focus:outline-none focus:bg-white focus:border-[#0D9488] transition-colors"
           />
 
           {validationMessage && (
             <div
               role="alert"
-              className="mt-4 p-4 rounded-2xl bg-[#FEF2F2] border border-[#DC2626]/25 text-[#991B1B] text-xs sm:text-sm font-semibold flex items-center gap-2.5"
+              className="mt-4 p-4 rounded-2xl bg-[#F0F9FF] border border-[#0284C7]/40 text-[#0F2942] text-xs sm:text-sm font-semibold flex items-center gap-2.5"
             >
-              <AlertCircle className="w-4 h-4 shrink-0" aria-hidden="true" />
+              <AlertCircle className="w-4 h-4 shrink-0 text-[#0284C7]" aria-hidden="true" />
               <span>{validationMessage}</span>
             </div>
           )}
 
-          <div className="mt-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-4 border-t border-[#141E19]/10">
-            <p className="text-xs text-[#4A5550]">
-              Your check-in score is calculated immediately from Step 3 (0–12 points).
+          <div className="mt-6 flex flex-col sm:flex-row sm:items-center justify-between gap-4 pt-4 border-t border-[#E0F2FE]">
+            <p className="text-xs text-[#47627B]">
+              Your reflection summary is created privately inside your browser.
             </p>
             <button
               type="submit"
-              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-2xl bg-[#1B4332] hover:bg-[#133124] text-white text-sm sm:text-base font-bold shadow-md hover:shadow-lg transition-all cursor-pointer"
+              className="w-full sm:w-auto inline-flex items-center justify-center gap-2 px-7 py-3.5 rounded-2xl bg-gradient-to-r from-[#0D9488] to-[#0284C7] hover:from-[#0F766E] hover:to-[#0369A1] text-white text-sm sm:text-base font-bold shadow-md transition-all cursor-pointer"
             >
               <span>See My Check-In Summary &rarr;</span>
             </button>
@@ -898,34 +868,34 @@ export const AssessmentModule: React.FC<AssessmentModuleProps> = ({
 
                 <button
                   type="button"
-                  onClick={() => setIsAiBotOpen(true)}
+                  onClick={onOpenCrisisModal}
                   className="inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-white hover:bg-[#FFFBEB] text-[#78350F] border border-[#D97706]/40 text-xs sm:text-sm font-bold transition-colors cursor-pointer"
                 >
                   <MessageSquareHeart className="w-4 h-4 text-[#D97706]" aria-hidden="true" />
-                  <span>Talk to AI Support Bot</span>
+                  <span>Get Support Now</span>
                 </button>
               </div>
             </div>
           )}
 
-          {/* 🔴 Score 9–12: High Distress / Overwhelmed (Soft Coral Card) */}
+          {/* 🔴 Score 9–12: High Distress / Overwhelmed */}
           {totalScore >= 9 && (
-            <div className="rounded-3xl p-6 sm:p-8 bg-[#FFF1F2] border-2 border-[#F43F5E]/40 shadow-[0_16px_40px_rgba(244,63,94,0.12)]">
+            <div className="rounded-3xl p-6 sm:p-8 bg-[#F0F9FF] border-2 border-[#0284C7]/45 shadow-[0_16px_40px_rgba(2,132,199,0.12)]">
               <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
-                <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-[#FFE4E6] text-[#9F1239] text-xs font-extrabold">
-                  <span>🔴 Score 9–12: High Distress / Overwhelmed</span>
+                <span className="inline-flex items-center gap-2 px-3.5 py-1.5 rounded-xl bg-[#E0F2FE] text-[#0369A1] text-xs font-extrabold">
+                  <span>💙 Score 9–12: Heavy Load — Extra Care Recommended</span>
                 </span>
-                <span className="font-mono text-xs font-bold text-[#9F1239] bg-white/80 px-3 py-1 rounded-lg border border-[#F43F5E]/30">
+                <span className="font-mono text-xs font-bold text-[#0369A1] bg-white/80 px-3 py-1 rounded-lg border border-[#0284C7]/30">
                   Total Score: {totalScore} / 12 pts
                 </span>
               </div>
 
-              <h3 className="text-xl sm:text-2xl font-extrabold text-[#881337]">
+              <h3 className="text-xl sm:text-2xl font-extrabold text-[#0F2942]">
                 &ldquo;You are carrying a heavy emotional load right now. You don&apos;t have to
                 figure this out alone.&rdquo;
               </h3>
 
-              <p className="text-sm text-[#9F1239] mt-2 leading-relaxed">
+              <p className="text-sm text-[#47627B] mt-2 leading-relaxed">
                 {selectedMood ? `Mood logged: ${selectedMood} · ` : ''}
                 Mental/Social Battery: {batteryLevel}%
                 {selectedTriggers.length > 0
@@ -934,7 +904,7 @@ export const AssessmentModule: React.FC<AssessmentModuleProps> = ({
               </p>
 
               {brainDump.trim() && (
-                <div className="mt-4 p-3.5 rounded-2xl bg-white/75 border border-[#F43F5E]/30 text-xs sm:text-sm text-[#881337] italic">
+                <div className="mt-4 p-3.5 rounded-2xl bg-white/85 border border-[#BAE6FD] text-xs sm:text-sm text-[#0F2942] italic">
                   <span className="font-bold not-italic">Your private note: </span>
                   &ldquo;{brainDump.trim()}&rdquo;
                 </div>
@@ -944,19 +914,19 @@ export const AssessmentModule: React.FC<AssessmentModuleProps> = ({
                 <button
                   type="button"
                   onClick={() => onSelectSection('counseling')}
-                  className="inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-[#E11D48] hover:bg-[#BE123C] text-white text-xs sm:text-sm font-bold shadow-sm transition-colors cursor-pointer"
+                  className="inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-[#0D9488] hover:bg-[#0F766E] text-white text-xs sm:text-sm font-bold shadow-sm transition-colors cursor-pointer"
                 >
                   <CalendarHeart className="w-4 h-4" aria-hidden="true" />
-                  <span>Book Priority Campus Counselor</span>
+                  <span>Book Friendly Campus Counselor</span>
                 </button>
 
                 <button
                   type="button"
                   onClick={onOpenCrisisModal}
-                  className="inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-white hover:bg-[#FFF1F2] text-[#9F1239] border border-[#E11D48]/40 text-xs sm:text-sm font-bold transition-colors cursor-pointer"
+                  className="inline-flex items-center gap-2 px-5 py-3 rounded-2xl bg-white hover:bg-[#E0F2FE] text-[#0284C7] border border-[#0284C7]/40 text-xs sm:text-sm font-bold transition-colors cursor-pointer"
                 >
-                  <PhoneCall className="w-4 h-4 text-[#E11D48]" aria-hidden="true" />
-                  <span>Call 24/7 Helpline (14416)</span>
+                  <PhoneCall className="w-4 h-4 text-[#0284C7]" aria-hidden="true" />
+                  <span>Get Support (24/7 Line: 14416)</span>
                 </button>
               </div>
             </div>
@@ -965,18 +935,18 @@ export const AssessmentModule: React.FC<AssessmentModuleProps> = ({
       )}
 
       {/* Bonus UI Widget: 7-Day Mood Streak Bar (Mon to Sun) */}
-      <div className="mt-8 bg-white/90 backdrop-blur-xl border border-[#141E19]/10 rounded-3xl p-6 sm:p-8 shadow-xs">
+      <div className="mt-8 bg-white/95 backdrop-blur-xl border border-[#BAE6FD] rounded-3xl p-6 sm:p-8 shadow-xs">
         <div className="flex flex-wrap items-center justify-between gap-3 mb-4">
           <div className="flex items-center gap-2.5">
-            <div className="w-9 h-9 rounded-2xl bg-[#FEF3C7] text-[#D97706] flex items-center justify-center">
+            <div className="w-9 h-9 rounded-2xl bg-[#F0FDFA] border border-[#99F6E4] text-[#0D9488] flex items-center justify-center">
               <CalendarDays className="w-5 h-5" aria-hidden="true" />
             </div>
             <div>
-              <h3 className="text-base sm:text-lg font-extrabold text-[#141E19]">
+              <h3 className="text-base sm:text-lg font-extrabold text-[#0F2942]">
                 7-Day Mood Streak Bar (Mon &ndash; Sun)
               </h3>
-              <p className="text-xs text-[#4A5550]">
-                Saved in browser localStorage so you can track emotional patterns across exam weeks
+              <p className="text-xs text-[#47627B]">
+                Saved in browser localStorage so you can spot emotional patterns across study weeks
               </p>
             </div>
           </div>
@@ -984,7 +954,7 @@ export const AssessmentModule: React.FC<AssessmentModuleProps> = ({
           <button
             type="button"
             onClick={() => onSelectSection('wellness-log')}
-            className="text-xs font-bold text-[#1B4332] hover:underline cursor-pointer"
+            className="text-xs font-bold text-[#0D9488] hover:underline cursor-pointer"
           >
             Open Full Mood &amp; Sleep Insights &rarr;
           </button>
@@ -1002,13 +972,13 @@ export const AssessmentModule: React.FC<AssessmentModuleProps> = ({
                 }
                 className={`flex flex-col items-center justify-center p-3 sm:p-4 rounded-2xl border transition-all cursor-pointer ${
                   isSelected
-                    ? 'bg-[#1B4332] text-white border-[#1B4332] shadow-sm'
-                    : 'bg-[#F8F7F4] hover:bg-white text-[#141E19] border-[#141E19]/10'
+                    ? 'bg-[#0D9488] text-white border-[#0D9488] shadow-sm'
+                    : 'bg-[#F0F9FF] hover:bg-[#E0F2FE] text-[#0F2942] border-[#BAE6FD]'
                 }`}
               >
                 <span
                   className={`text-[11px] font-mono font-bold uppercase ${
-                    isSelected ? 'text-[#A7F3D0]' : 'text-[#4A5550]'
+                    isSelected ? 'text-[#CCFBF1]' : 'text-[#47627B]'
                   }`}
                 >
                   {dayItem.day}
@@ -1018,7 +988,7 @@ export const AssessmentModule: React.FC<AssessmentModuleProps> = ({
                 </span>
                 <span
                   className={`text-[10px] font-semibold truncate max-w-full ${
-                    isSelected ? 'text-white' : 'text-[#141E19]'
+                    isSelected ? 'text-white' : 'text-[#0F2942]'
                   }`}
                 >
                   {dayItem.label}
@@ -1029,7 +999,7 @@ export const AssessmentModule: React.FC<AssessmentModuleProps> = ({
         </div>
 
         {selectedDayForDetail && (
-          <div className="mt-4 p-3.5 rounded-2xl bg-[#F8F7F4] border border-[#141E19]/10 flex flex-wrap items-center justify-between gap-2 text-xs text-[#141E19]">
+          <div className="mt-4 p-3.5 rounded-2xl bg-[#F0F9FF] border border-[#BAE6FD] flex flex-wrap items-center justify-between gap-2 text-xs text-[#0F2942]">
             <span>
               <strong>{selectedDayForDetail.day}:</strong> {selectedDayForDetail.emoji}{' '}
               {selectedDayForDetail.label}
@@ -1037,43 +1007,43 @@ export const AssessmentModule: React.FC<AssessmentModuleProps> = ({
                 ? ` · Social Battery: ${selectedDayForDetail.battery}%`
                 : ''}
               {selectedDayForDetail.score !== undefined
-                ? ` · Rapid Screen Score: ${selectedDayForDetail.score}/12`
+                ? ` · Reflection Score: ${selectedDayForDetail.score}/12`
                 : ''}
             </span>
-            <span className="text-[#4A5550] font-mono">🔒 Stored locally</span>
+            <span className="text-[#47627B] font-mono">🔒 Stored locally</span>
           </div>
         )}
       </div>
 
       {/* Interactive 3-Min Breathing Reset Modal */}
       {isBreathingModalOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#141E19]/50 backdrop-blur-sm">
-          <div className="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 border border-[#141E19]/10 shadow-2xl text-center relative">
+        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#0F2942]/50 backdrop-blur-sm">
+          <div className="bg-white rounded-3xl max-w-md w-full p-6 sm:p-8 border border-[#BAE6FD] shadow-2xl text-center relative">
             <button
               type="button"
               onClick={() => setIsBreathingModalOpen(false)}
               aria-label="Close breathing reset"
-              className="absolute top-4 right-4 p-2 rounded-full text-[#4A5550] hover:bg-[#F8F7F4] cursor-pointer"
+              className="absolute top-4 right-4 p-2 rounded-full text-[#47627B] hover:bg-[#F0F9FF] cursor-pointer"
             >
               <X className="w-5 h-5" />
             </button>
 
-            <span className="inline-flex items-center gap-1.5 text-xs font-bold text-[#1B4332] bg-[#E8F3EE] px-3 py-1 rounded-lg">
+            <span className="inline-flex items-center gap-1.5 text-xs font-bold text-[#0D9488] bg-[#F0FDFA] border border-[#99F6E4] px-3 py-1 rounded-lg">
               <Wind className="w-3.5 h-3.5" />
               <span>3-Minute Guided Breathing Reset</span>
             </span>
 
-            <h4 className="text-xl font-extrabold text-[#141E19] mt-3">
+            <h4 className="text-xl font-extrabold text-[#0F2942] mt-3">
               Unclench your jaw and drop your shoulders
             </h4>
-            <p className="text-xs text-[#4A5550] mt-1 font-mono">
+            <p className="text-xs text-[#47627B] mt-1 font-mono">
               Time remaining: {Math.floor(breathingSecondsLeft / 60)}:
               {String(breathingSecondsLeft % 60).padStart(2, '0')}
             </p>
 
             <div className="my-8 flex items-center justify-center">
               <div
-                className={`w-40 h-40 rounded-full flex flex-col items-center justify-center transition-all duration-[4000ms] ease-in-out border-4 border-[#1B4332]/25 bg-gradient-to-br from-[#D8F3DC] to-[#95D5B2] shadow-inner ${
+                className={`w-40 h-40 rounded-full flex flex-col items-center justify-center transition-all duration-[4000ms] ease-in-out border-4 border-[#99F6E4] bg-gradient-to-br from-[#E0F2FE] to-[#CCFBF1] shadow-inner ${
                   breathingPhase === 'Inhale (4s)'
                     ? 'scale-115'
                     : breathingPhase === 'Hold (4s)'
@@ -1081,8 +1051,8 @@ export const AssessmentModule: React.FC<AssessmentModuleProps> = ({
                     : 'scale-90 opacity-75'
                 }`}
               >
-                <span className="text-base font-extrabold text-[#1B4332]">{breathingPhase}</span>
-                <span className="text-[11px] font-medium text-[#1B4332]/80 mt-1">
+                <span className="text-base font-extrabold text-[#0F766E]">{breathingPhase}</span>
+                <span className="text-[11px] font-medium text-[#0284C7] mt-1">
                   4-4-4 Calm Rhythm
                 </span>
               </div>
@@ -1091,80 +1061,10 @@ export const AssessmentModule: React.FC<AssessmentModuleProps> = ({
             <button
               type="button"
               onClick={() => setIsBreathingModalOpen(false)}
-              className="w-full py-3 rounded-2xl bg-[#1B4332] text-white text-xs sm:text-sm font-bold cursor-pointer"
+              className="w-full py-3 rounded-2xl bg-[#0D9488] hover:bg-[#0F766E] text-white text-xs sm:text-sm font-bold cursor-pointer"
             >
               I Feel More Grounded — Return to Summary
             </button>
-          </div>
-        </div>
-      )}
-
-      {/* Interactive 24/7 AI Support Bot Modal */}
-      {isAiBotOpen && (
-        <div className="fixed inset-0 z-50 flex items-center justify-center p-4 bg-[#141E19]/50 backdrop-blur-sm">
-          <div className="bg-white rounded-3xl max-w-lg w-full p-6 border border-[#141E19]/10 shadow-2xl flex flex-col max-h-[85vh]">
-            <div className="flex items-center justify-between pb-4 border-b border-[#141E19]/10">
-              <div className="flex items-center gap-2.5">
-                <div className="w-9 h-9 rounded-2xl bg-[#E8F3EE] text-[#1B4332] flex items-center justify-center">
-                  <Sparkles className="w-5 h-5" />
-                </div>
-                <div>
-                  <h4 className="text-sm font-extrabold text-[#141E19]">
-                    24/7 AI Support Companion
-                  </h4>
-                  <p className="text-[11px] text-[#4A5550]">
-                    🔒 Anonymous · Pre-tuned to your check-in (Score: {totalScore}/12)
-                  </p>
-                </div>
-              </div>
-              <button
-                type="button"
-                onClick={() => setIsAiBotOpen(false)}
-                aria-label="Close AI Support Bot"
-                className="p-1.5 rounded-full text-[#4A5550] hover:bg-[#F8F7F4] cursor-pointer"
-              >
-                <X className="w-5 h-5" />
-              </button>
-            </div>
-
-            <div className="flex-1 overflow-y-auto py-4 space-y-3 min-h-[220px]">
-              {chatMessages.map((msg, idx) => (
-                <div
-                  key={idx}
-                  className={`flex ${msg.sender === 'student' ? 'justify-end' : 'justify-start'}`}
-                >
-                  <div
-                    className={`max-w-[85%] rounded-2xl px-4 py-3 text-xs sm:text-sm leading-relaxed ${
-                      msg.sender === 'student'
-                        ? 'bg-[#1B4332] text-white'
-                        : 'bg-[#F8F7F4] text-[#141E19] border border-[#141E19]/10'
-                    }`}
-                  >
-                    {msg.text}
-                  </div>
-                </div>
-              ))}
-            </div>
-
-            <form
-              onSubmit={handleSendChatMessage}
-              className="pt-3 border-t border-[#141E19]/10 flex items-center gap-2"
-            >
-              <input
-                type="text"
-                value={chatInput}
-                onChange={(e) => setChatInput(e.target.value)}
-                placeholder="Share what's on your mind..."
-                className="flex-1 px-4 py-2.5 rounded-xl bg-[#F8F7F4] border border-[#141E19]/15 text-xs sm:text-sm text-[#141E19] focus:outline-none focus:border-[#1B4332]"
-              />
-              <button
-                type="submit"
-                className="px-4 py-2.5 rounded-xl bg-[#1B4332] hover:bg-[#133124] text-white text-xs font-bold inline-flex items-center gap-1.5 cursor-pointer"
-              >
-                <Send className="w-3.5 h-3.5" />
-                <span>Send</span>
-              </button>
-            </form>
           </div>
         </div>
       )}

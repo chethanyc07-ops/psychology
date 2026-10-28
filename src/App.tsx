@@ -8,7 +8,7 @@ import { AnimatePresence, motion } from 'motion/react';
 import {
   PanelLeftClose,
   PanelLeftOpen,
-  PhoneCall,
+  HeartHandshake,
   X,
 } from 'lucide-react';
 import { TopBar, NavSectionId, SEPARATE_SECTIONS } from './components/TopBar';
@@ -25,10 +25,17 @@ import {
   INITIAL_APPOINTMENTS,
   ScheduledAppointment,
 } from './utils/seedData';
+import {
+  AppPreferencesProvider,
+  useAppPreferences,
+} from './utils/i18nAndAccessibility';
 
 const STORAGE_KEY_APPOINTMENTS = 'solace_appointments_v1';
 
-export default function App() {
+function AppShell() {
+  const { language, a11y, announceToScreenReader } = useAppPreferences();
+  const isKn = language === 'kn';
+
   const [activeSection, setActiveSection] = useState<NavSectionId>('home');
   const [transitionDirection, setTransitionDirection] = useState<number>(1);
   const [isSidebarExpanded, setIsSidebarExpanded] = useState<boolean>(true);
@@ -53,6 +60,15 @@ export default function App() {
     }
   }, [appointments]);
 
+  // Apply low-distraction class to document.body when toggled
+  useEffect(() => {
+    if (a11y.lowDistraction) {
+      document.body.classList.add('a11y-low-distraction');
+    } else {
+      document.body.classList.remove('a11y-low-distraction');
+    }
+  }, [a11y.lowDistraction]);
+
   const handleBookAppointment = (newAppointment: ScheduledAppointment) => {
     setAppointments((prev) => [newAppointment, ...prev]);
   };
@@ -73,8 +89,30 @@ export default function App() {
     }
     setActiveSection(section);
     setIsMobileDrawerOpen(false);
+    const targetMeta = SEPARATE_SECTIONS[nextIdx];
+    if (targetMeta) {
+      announceToScreenReader(
+        isKn ? `ವಿಭಾಗ ತೆರೆಯಲಾಗಿದೆ: ${targetMeta.labelKn}` : `Navigated to ${targetMeta.label}`
+      );
+    }
     window.scrollTo({ top: 0, behavior: 'smooth' });
   };
+
+  // Keyboard Navigation Shortcuts (Alt + 1..6)
+  useEffect(() => {
+    const handleKeyDown = (e: KeyboardEvent) => {
+      if (e.altKey && e.key >= '1' && e.key <= '6') {
+        const idx = Number(e.key) - 1;
+        const target = SEPARATE_SECTIONS[idx];
+        if (target) {
+          e.preventDefault();
+          handleSelectSection(target.id);
+        }
+      }
+    };
+    window.addEventListener('keydown', handleKeyDown);
+    return () => window.removeEventListener('keydown', handleKeyDown);
+  }, [activeSection, isKn]);
 
   const handleToggleSidebar = () => {
     if (window.innerWidth < 768) {
@@ -98,8 +136,18 @@ export default function App() {
   ] as const;
   const slideYClass = slideYClasses[activeIndex] || 'translate-y-0';
 
+  const a11yWrapperClasses = [
+    a11y.readableFont ? 'a11y-readable-font' : '',
+    a11y.highContrast ? 'a11y-high-contrast' : '',
+    a11y.lowDistraction ? 'a11y-low-distraction' : '',
+  ]
+    .filter(Boolean)
+    .join(' ');
+
   return (
-    <div className="min-h-screen flex flex-col bg-transparent text-[#141E19] pb-24 md:pb-0">
+    <div
+      className={`min-h-screen flex flex-col bg-transparent text-[#0F2942] pb-24 md:pb-0 ${a11yWrapperClasses}`}
+    >
       <TopBar
         activeSection={activeSection}
         onSelectSection={handleSelectSection}
@@ -109,32 +157,34 @@ export default function App() {
         activeAppointmentsCount={activeAppointmentsCount}
       />
 
-      {/* Mobile Slide-Over Drawer (Transparent Liquid-Glass Sheet with Moving Toggle Pill) */}
+      {/* Mobile Slide-Over Drawer (Soft Blue, Teal & White Sheet) */}
       {isMobileDrawerOpen && (
         <div className="fixed inset-0 z-50 md:hidden flex">
           <div
-            className="fixed inset-0 bg-[#141E19]/25 backdrop-blur-xs"
+            className="fixed inset-0 bg-[#0F2942]/30 backdrop-blur-xs"
             onClick={() => setIsMobileDrawerOpen(false)}
           />
-          <aside className="relative z-10 w-72 max-w-[85vw] bg-white/60 backdrop-blur-2xl h-full border-r border-white/85 p-5 flex flex-col justify-between shadow-[0_16px_48px_rgba(20,30,25,0.18),inset_0_1px_1px_rgba(255,255,255,0.95)]">
+          <aside className="relative z-10 w-72 max-w-[85vw] bg-white/95 backdrop-blur-2xl h-full border-r border-[#BAE6FD] p-5 flex flex-col justify-between shadow-[0_16px_48px_rgba(15,41,66,0.18)]">
             <div>
-              <div className="flex items-center justify-between pb-4 mb-4 border-b border-[#141E19]/10">
-                <span className="text-base font-bold text-[#141E19]">Solace Campus</span>
+              <div className="flex items-center justify-between pb-4 mb-4 border-b border-[#E0F2FE]">
+                <span className="text-base font-extrabold text-[#0F2942]">
+                  {isKn ? 'ಸೊಲೇಸ್ ಕ್ಯಾಂಪಸ್' : 'Solace Campus'}
+                </span>
                 <button
                   type="button"
                   onClick={() => setIsMobileDrawerOpen(false)}
                   aria-label="Close mobile menu"
-                  className="p-1.5 rounded-full text-[#4A5550] bg-white/60 hover:bg-white border border-white/80"
+                  className="p-1.5 rounded-full text-[#47627B] bg-[#F0F9FF] hover:bg-[#E0F2FE] border border-[#BAE6FD]"
                 >
                   <X className="w-5 h-5" />
                 </button>
               </div>
 
-              <div className="relative grid grid-rows-6 p-1.5 rounded-3xl bg-white/45 backdrop-blur-xl border border-white/80 shadow-[inset_0_1px_1px_rgba(255,255,255,0.9)]">
-                {/* Smoothly Moving Vertical Liquid-Glass Pill Indicator */}
+              <div className="relative grid grid-rows-6 p-1.5 rounded-3xl bg-[#F0F9FF] border border-[#BAE6FD]/80">
+                {/* Smoothly Moving Vertical Soft Teal Pill Indicator */}
                 <div
                   aria-hidden="true"
-                  className={`pointer-events-none absolute left-1.5 right-1.5 top-1.5 h-[calc((100%-12px)/6)] rounded-2xl bg-[#141E19]/[0.09] backdrop-blur-xl border border-white/95 shadow-[0_4px_14px_rgba(20,30,25,0.08),inset_0_1.5px_2px_rgba(255,255,255,0.95)] transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${slideYClass}`}
+                  className={`pointer-events-none absolute left-1.5 right-1.5 top-1.5 h-[calc((100%-12px)/6)] rounded-2xl bg-white border border-[#99F6E4] shadow-[0_4px_14px_rgba(13,148,136,0.08)] transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${slideYClass}`}
                 />
 
                 {SEPARATE_SECTIONS.map((item) => {
@@ -145,23 +195,25 @@ export default function App() {
                       key={item.id}
                       type="button"
                       onClick={() => handleSelectSection(item.id)}
-                      className={`relative z-10 w-full flex items-center gap-3.5 px-3.5 py-2.5 rounded-2xl text-left transition-all cursor-pointer ${
+                      className={`relative z-10 w-full flex items-center gap-3.5 px-3.5 py-2 rounded-2xl text-left transition-all cursor-pointer ${
                         isActive
-                          ? 'text-[#141E19] font-extrabold'
-                          : 'text-[#141E19]/80 hover:text-[#141E19] font-medium'
+                          ? 'text-[#0F2942] font-extrabold'
+                          : 'text-[#47627B] hover:text-[#0F2942] font-medium'
                       }`}
                     >
                       <Icon
                         className={`w-5 h-5 shrink-0 transition-transform duration-200 ${
                           isActive
-                            ? 'text-[#1B4332] stroke-[2.4] scale-110'
-                            : 'text-[#1B4332]/80 stroke-[1.8]'
+                            ? 'text-[#0D9488] stroke-[2.4] scale-110'
+                            : 'text-[#0284C7] stroke-[1.8]'
                         }`}
                       />
                       <div className="min-w-0 flex-1">
-                        <div className="text-xs leading-tight truncate">{item.label}</div>
-                        <div className="text-[10px] truncate mt-0.5 text-[#4A5550]">
-                          {item.shortTitle}
+                        <div className="text-xs leading-tight truncate">
+                          {isKn ? item.labelKn : item.label}
+                        </div>
+                        <div className="text-[10px] truncate mt-0.5 text-[#47627B]">
+                          {isKn ? item.shortTitleKn : item.shortTitle}
                         </div>
                       </div>
                     </button>
@@ -176,10 +228,10 @@ export default function App() {
                 setIsMobileDrawerOpen(false);
                 setIsCrisisModalOpen(true);
               }}
-              className="w-full py-2.5 px-4 rounded-full bg-[#9E2A2B] text-white text-xs font-semibold flex items-center justify-center gap-2 cursor-pointer shadow-sm"
+              className="w-full py-3 px-4 rounded-2xl bg-gradient-to-r from-[#0D9488] to-[#0284C7] text-white text-xs font-bold flex items-center justify-center gap-2 cursor-pointer shadow-md"
             >
-              <PhoneCall className="w-4 h-4" />
-              <span>24/7 Urgent Crisis Line (988)</span>
+              <HeartHandshake className="w-4 h-4" />
+              <span>{isKn ? 'ಬೆಂಬಲ ಪಡೆಯಿರಿ (Get Support)' : 'Get Support (24/7 Care)'}</span>
             </button>
           </aside>
         </div>
@@ -187,22 +239,22 @@ export default function App() {
 
       {/* App Shell: Left Collapsible Navigation Rail (Desktop Only) + Main Stage */}
       <div className="flex-1 flex max-w-[1440px] w-full mx-auto">
-        {/* Left Collapsible Navigation Rail with Transparent Glass & Moving Toggle Pill */}
+        {/* Left Collapsible Navigation Rail with Soft Blue, Teal & White Rounded Design */}
         <aside
           id="app-navigation-rail"
-          aria-label="Instagram and WhatsApp Style Collapsible Sidebar Rail"
-          className={`hidden md:flex flex-col justify-between shrink-0 sticky top-[61px] h-[calc(100vh-61px)] bg-white/50 backdrop-blur-2xl border-r border-white/85 transition-all duration-300 px-3 py-4 ${
+          aria-label="Primary Campus Support Navigation Rail"
+          className={`hidden md:flex flex-col justify-between shrink-0 sticky top-[61px] h-[calc(100vh-61px)] bg-white/80 backdrop-blur-2xl border-r border-[#BAE6FD]/80 transition-all duration-300 px-3 py-4 ${
             isSidebarExpanded ? 'w-64' : 'w-[82px]'
           }`}
         >
-          <div className="relative grid grid-rows-6 p-1.5 rounded-3xl bg-white/45 backdrop-blur-xl border border-white/80 shadow-[0_8px_24px_rgba(20,30,25,0.06),inset_0_1px_1.5px_rgba(255,255,255,0.95)]">
-            {/* Smoothly Moving Vertical Liquid-Glass Toggle Pill */}
+          <div className="relative grid grid-rows-6 p-1.5 rounded-3xl bg-[#F0F9FF]/90 border border-[#BAE6FD]/80 shadow-[0_8px_24px_rgba(15,41,66,0.04)]">
+            {/* Smoothly Moving Vertical Toggle Pill */}
             <div
               aria-hidden="true"
-              className={`pointer-events-none absolute left-1.5 right-1.5 top-1.5 h-[calc((100%-12px)/6)] rounded-2xl bg-[#141E19]/[0.09] backdrop-blur-xl border border-white/95 shadow-[0_4px_14px_rgba(20,30,25,0.08),inset_0_1.5px_2px_rgba(255,255,255,0.95)] transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${slideYClass}`}
+              className={`pointer-events-none absolute left-1.5 right-1.5 top-1.5 h-[calc((100%-12px)/6)] rounded-2xl bg-white border border-[#99F6E4] shadow-[0_4px_14px_rgba(13,148,136,0.08)] transition-transform duration-300 ease-[cubic-bezier(0.22,1,0.36,1)] ${slideYClass}`}
             />
 
-            {SEPARATE_SECTIONS.map((item) => {
+            {SEPARATE_SECTIONS.map((item, index) => {
               const Icon = item.icon;
               const isActive = activeSection === item.id;
 
@@ -217,24 +269,31 @@ export default function App() {
                     isSidebarExpanded ? 'px-3.5 py-2.5 text-left' : 'p-2.5 justify-center'
                   } ${
                     isActive
-                      ? 'text-[#141E19] font-extrabold'
-                      : 'text-[#141E19]/75 hover:text-[#141E19]'
+                      ? 'text-[#0F2942] font-extrabold'
+                      : 'text-[#47627B] hover:text-[#0F2942]'
                   }`}
                 >
                   <div className="relative flex items-center justify-center shrink-0">
                     <Icon
                       className={`w-5 h-5 transition-all duration-200 group-hover:scale-105 ${
                         isActive
-                          ? 'text-[#1B4332] stroke-[2.4] scale-110'
-                          : 'text-[#1B4332]/80 stroke-[1.8]'
+                          ? 'text-[#0D9488] stroke-[2.4] scale-110'
+                          : 'text-[#0284C7] stroke-[1.8]'
                       }`}
                       aria-hidden="true"
                     />
                   </div>
 
                   {isSidebarExpanded && (
-                    <div className="min-w-0 flex-1">
-                      <div className="text-xs leading-snug truncate">{item.label}</div>
+                    <div className="min-w-0 flex-1 flex items-center justify-between gap-1">
+                      <div className="text-xs leading-snug truncate">
+                        {isKn ? item.labelKn : item.label}
+                      </div>
+                      {a11y.screenReaderAndKeyboard && (
+                        <kbd className="px-1.5 py-0.5 rounded bg-[#E0F2FE] text-[9px] font-mono text-[#0284C7] shrink-0">
+                          Alt+{index + 1}
+                        </kbd>
+                      )}
                     </div>
                   )}
                 </button>
@@ -243,31 +302,31 @@ export default function App() {
           </div>
 
           {/* Rail Footer: Collapse/Expand Toggle */}
-          <div className="pt-3 border-t border-[#141E19]/10 space-y-2">
+          <div className="pt-3 border-t border-[#E0F2FE] space-y-2">
             <button
               type="button"
               onClick={() => setIsSidebarExpanded((prev) => !prev)}
               aria-label={isSidebarExpanded ? 'Switch to icon-only rail' : 'Expand sidebar labels'}
-              className={`w-full flex items-center gap-3 rounded-full py-2.5 px-3 text-xs font-semibold text-[#141E19] bg-white/55 hover:bg-white/85 border border-white/85 shadow-2xs transition-all cursor-pointer ${
+              className={`w-full flex items-center gap-3 rounded-2xl py-2.5 px-3 text-xs font-semibold text-[#0F2942] bg-[#F0F9FF] hover:bg-[#E0F2FE] border border-[#BAE6FD] transition-all cursor-pointer ${
                 isSidebarExpanded ? 'justify-start' : 'justify-center'
               }`}
             >
               {isSidebarExpanded ? (
                 <>
-                  <PanelLeftClose className="w-4 h-4 text-[#1B4332] shrink-0" aria-hidden="true" />
-                  <span className="truncate">Icon-Only Rail</span>
+                  <PanelLeftClose className="w-4 h-4 text-[#0D9488] shrink-0" aria-hidden="true" />
+                  <span className="truncate">{isKn ? 'ಐಕಾನ್ ಮಾತ್ರ ತೋರಿಸಿ' : 'Compact Sidebar'}</span>
                 </>
               ) : (
                 <>
-                  <PanelLeftOpen className="w-4 h-4 text-[#1B4332] shrink-0" aria-hidden="true" />
+                  <PanelLeftOpen className="w-4 h-4 text-[#0D9488] shrink-0" aria-hidden="true" />
                 </>
               )}
             </button>
           </div>
         </aside>
 
-        {/* Main Separate Section Workspace with Liquid AnimatePresence Transitions */}
-        <main className="flex-1 min-w-0 overflow-x-hidden">
+        {/* Main Separate Section Workspace */}
+        <main id="main-workspace" className="flex-1 min-w-0 overflow-x-hidden">
           <AnimatePresence mode="wait" custom={transitionDirection} initial={false}>
             <motion.div
               key={activeSection}
@@ -299,7 +358,7 @@ export default function App() {
               animate="center"
               exit="exit"
               transition={{
-                duration: 0.34,
+                duration: a11y.lowDistraction ? 0.05 : 0.34,
                 ease: [0.22, 1, 0.36, 1],
               }}
               className="w-full min-h-[calc(100vh-140px)]"
@@ -352,7 +411,22 @@ export default function App() {
       {/* Bottom Footer Web Audio Player (Rain on a Window, Brown Noise, Soft Lo-Fi) */}
       <FooterAudioPlayer />
 
-      <CrisisModal isOpen={isCrisisModalOpen} onClose={() => setIsCrisisModalOpen(false)} />
+      <CrisisModal
+        isOpen={isCrisisModalOpen}
+        onClose={() => setIsCrisisModalOpen(false)}
+        onBookCounselor={() => {
+          setIsCrisisModalOpen(false);
+          handleSelectSection('counseling');
+        }}
+      />
     </div>
+  );
+}
+
+export default function App() {
+  return (
+    <AppPreferencesProvider>
+      <AppShell />
+    </AppPreferencesProvider>
   );
 }

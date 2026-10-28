@@ -9,14 +9,14 @@
 
   body {
     font-family: var(--font-sans);
-    color: #141E19;
-    background-color: #EEF3F0;
+    color: #0F2942;
+    background-color: #F0F7FC;
     background-image:
-      radial-gradient(at 12% 10%, rgba(149, 213, 178, 0.38) 0px, transparent 48%),
-      radial-gradient(at 88% 14%, rgba(233, 196, 106, 0.28) 0px, transparent 45%),
-      radial-gradient(at 50% 48%, rgba(163, 201, 181, 0.26) 0px, transparent 55%),
-      radial-gradient(at 18% 85%, rgba(116, 198, 157, 0.28) 0px, transparent 50%),
-      radial-gradient(at 85% 88%, rgba(244, 162, 97, 0.2) 0px, transparent 48%);
+      radial-gradient(at 10% 10%, rgba(186, 230, 253, 0.65) 0px, transparent 50%),
+      radial-gradient(at 88% 12%, rgba(153, 246, 228, 0.5) 0px, transparent 48%),
+      radial-gradient(at 50% 48%, rgba(224, 242, 254, 0.6) 0px, transparent 55%),
+      radial-gradient(at 15% 85%, rgba(165, 243, 252, 0.45) 0px, transparent 50%),
+      radial-gradient(at 85% 88%, rgba(186, 230, 253, 0.5) 0px, transparent 48%);
     background-attachment: fixed;
   }
 
@@ -34,48 +34,105 @@
     font-variant-numeric: tabular-nums;
   }
 
-  /* Liquid Glass Surface Architecture */
+  /* Accessibility Mode 1: Readable Font & Larger Text (A+) */
+  .a11y-readable-font {
+    font-size: 108%;
+    line-height: 1.75 !important;
+    letter-spacing: 0.018em !important;
+    word-spacing: 0.04em !important;
+  }
+
+  .a11y-readable-font p,
+  .a11y-readable-font span,
+  .a11y-readable-font li,
+  .a11y-readable-font label,
+  .a11y-readable-font input,
+  .a11y-readable-font textarea {
+    line-height: 1.7 !important;
+  }
+
+  /* Accessibility Mode 2: Low-Distraction Interface */
+  .a11y-low-distraction {
+    background-color: #F4F9FC !important;
+    background-image: none !important;
+  }
+
+  .a11y-low-distraction * {
+    animation-duration: 0.01ms !important;
+    transition-duration: 0.05s !important;
+  }
+
+  /* Accessibility Mode 3: High Contrast Mode */
+  .a11y-high-contrast {
+    color: #07192B !important;
+  }
+
+  .a11y-high-contrast button:focus-visible,
+  .a11y-high-contrast a:focus-visible,
+  .a11y-high-contrast input:focus-visible,
+  .a11y-high-contrast select:focus-visible,
+  .a11y-high-contrast textarea:focus-visible {
+    outline: 3px solid #0D9488 !important;
+    outline-offset: 2px !important;
+  }
+
+  /* Soft Blue, Teal & Crisp White Rounded Surface Architecture */
   main .bg-white,
   footer.bg-white,
   .liquid-glass {
     background: linear-gradient(
       135deg,
-      rgba(255, 255, 255, 0.76) 0%,
-      rgba(255, 255, 255, 0.54) 100%
+      rgba(255, 255, 255, 0.95) 0%,
+      rgba(248, 252, 255, 0.88) 100%
     ) !important;
-    backdrop-filter: blur(20px) saturate(165%);
-    -webkit-backdrop-filter: blur(20px) saturate(165%);
-    border-color: rgba(255, 255, 255, 0.78) !important;
+    backdrop-filter: blur(20px) saturate(160%);
+    -webkit-backdrop-filter: blur(20px) saturate(160%);
+    border-color: rgba(186, 230, 253, 0.75) !important;
     box-shadow:
-      0 12px 32px -8px rgba(20, 30, 25, 0.07),
-      inset 0 1px 1px 0 rgba(255, 255, 255, 0.92);
+      0 12px 32px -8px rgba(15, 41, 66, 0.06),
+      inset 0 1px 1px 0 rgba(255, 255, 255, 0.96);
   }
 
   main .bg-\[\#F8F7F4\],
   main .bg-\[\#EFECE6\],
+  main .bg-\[\#F0F9FF\],
   .liquid-glass-pill {
     background: linear-gradient(
       135deg,
-      rgba(255, 255, 255, 0.58) 0%,
-      rgba(240, 246, 242, 0.42) 100%
+      rgba(240, 249, 255, 0.85) 0%,
+      rgba(224, 242, 254, 0.55) 100%
     ) !important;
     backdrop-filter: blur(14px) saturate(150%);
     -webkit-backdrop-filter: blur(14px) saturate(150%);
-    border-color: rgba(255, 255, 255, 0.68) !important;
-    box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.85);
+    border-color: rgba(186, 230, 253, 0.7) !important;
+    box-shadow: inset 0 1px 0 0 rgba(255, 255, 255, 0.9);
   }
 
-  main .bg-\[\#163024\] {
-    background: linear-gradient(
-      145deg,
-      rgba(22, 48, 36, 0.88) 0%,
-      rgba(15, 35, 26, 0.76) 100%
-    ) !important;
-    backdrop-filter: blur(24px) saturate(170%);
-    -webkit-backdrop-filter: blur(24px) saturate(170%);
-    border-color: rgba(255, 255, 255, 0.24) !important;
-    box-shadow:
-      0 18px 40px -10px rgba(13, 31, 23, 0.25),
-      inset 0 1px 1px 0 rgba(255, 255, 255, 0.28);
+  /* Harmonize all interactive accent tokens to Calm Teal & Soft Blue */
+  .bg-\[\#1B4332\] {
+    background-color: #0D9488 !important;
+  }
+  .hover\:bg-\[\#133124\]:hover {
+    background-color: #0F766E !important;
+  }
+  .text-\[\#1B4332\] {
+    color: #0D9488 !important;
+  }
+  .border-\[\#1B4332\] {
+    border-color: #0D9488 !important;
+  }
+  .bg-\[\#E8F3EE\] {
+    background-color: #F0FDFA !important;
+  }
+  .text-\[\#141E19\] {
+    color: #0F2942 !important;
+  }
+  .text-\[\#4A5550\] {
+    color: #47627B !important;
+  }
+  .bg-\[\#141E19\],
+  .bg-\[\#132A20\],
+  .bg-\[\#163024\] {
+    background: linear-gradient(135deg, #0F4C5C 0%, #0D9488 100%) !important;
   }
 }

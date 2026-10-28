@@ -338,13 +338,13 @@ export const FooterAudioPlayer: React.FC = () => {
   return (
     <section
       aria-label="60-Second Reset Ambient Audio Player"
-      className="bg-[#EFECE6]/90 backdrop-blur-xl border-t border-[#141E19]/12 py-4 px-4 sm:px-6"
+      className="bg-white/95 backdrop-blur-xl border-t border-[#BAE6FD]/80 py-4 px-4 sm:px-6"
     >
       <div className="max-w-[1440px] mx-auto flex flex-col xl:flex-row xl:items-center justify-between gap-4">
         {/* Left: Audio Track Toggles + Volume & 60s Timer */}
         <div className="flex flex-wrap items-center gap-2.5">
-          <div className="inline-flex items-center gap-2 pr-2 text-xs font-bold text-[#141E19]">
-            <Headphones className="w-4 h-4 text-[#1B4332]" aria-hidden="true" />
+          <div className="inline-flex items-center gap-2 pr-2 text-xs font-bold text-[#0F2942]">
+            <Headphones className="w-4 h-4 text-[#0D9488]" aria-hidden="true" />
             <span>60-Second Reset:</span>
           </div>
 
@@ -357,16 +357,16 @@ export const FooterAudioPlayer: React.FC = () => {
                 onClick={() => handleToggleTrack(track.id)}
                 aria-pressed={isPlaying}
                 title={track.shortDesc}
-                className={`inline-flex items-center gap-2 px-3.5 py-2 rounded-xl text-xs font-semibold border transition-all cursor-pointer whitespace-nowrap shrink-0 ${
+                className={`inline-flex items-center gap-2 px-3.5 py-2 rounded-2xl text-xs font-semibold border transition-all cursor-pointer whitespace-nowrap shrink-0 ${
                   isPlaying
-                    ? 'bg-[#1B4332] text-white border-[#1B4332] shadow-xs'
-                    : 'bg-white hover:bg-[#F8F7F4] text-[#141E19] border-[#141E19]/15'
+                    ? 'bg-[#0D9488] text-white border-[#0D9488] shadow-xs'
+                    : 'bg-[#F0F9FF] hover:bg-[#E0F2FE] text-[#0F2942] border-[#BAE6FD]'
                 }`}
               >
                 {isPlaying ? (
-                  <Square className="w-3 h-3 fill-current text-[#95D5B2]" aria-hidden="true" />
+                  <Square className="w-3 h-3 fill-current text-[#99F6E4]" aria-hidden="true" />
                 ) : (
-                  <Play className="w-3 h-3 fill-current text-[#1B4332]" aria-hidden="true" />
+                  <Play className="w-3 h-3 fill-current text-[#0D9488]" aria-hidden="true" />
                 )}
                 <span>{track.label}</span>
               </button>
@@ -374,17 +374,17 @@ export const FooterAudioPlayer: React.FC = () => {
           })}
 
           {/* Volume & 60s Timer Controls */}
-          <div className="inline-flex items-center gap-2 pl-1 sm:pl-2 border-l border-[#141E19]/15">
+          <div className="inline-flex items-center gap-2 pl-1 sm:pl-2 border-l border-[#BAE6FD]">
             <button
               type="button"
               onClick={() => setIsMuted((prev) => !prev)}
               aria-label={isMuted ? 'Unmute ambient audio' : 'Mute ambient audio'}
-              className="p-1.5 rounded-lg bg-white hover:bg-[#F8F7F4] border border-[#141E19]/12 text-[#141E19] cursor-pointer"
+              className="p-1.5 rounded-xl bg-[#F0F9FF] hover:bg-[#E0F2FE] border border-[#BAE6FD] text-[#0F2942] cursor-pointer"
             >
               {isMuted || volume === 0 ? (
-                <VolumeX className="w-3.5 h-3.5 text-[#9E2A2B]" />
+                <VolumeX className="w-3.5 h-3.5 text-[#0284C7]" />
               ) : (
-                <Volume2 className="w-3.5 h-3.5 text-[#1B4332]" />
+                <Volume2 className="w-3.5 h-3.5 text-[#0D9488]" />
               )}
             </button>
 
@@ -399,19 +399,19 @@ export const FooterAudioPlayer: React.FC = () => {
                 if (isMuted) setIsMuted(false);
               }}
               aria-label="Ambient audio volume"
-              className="w-20 accent-[#1B4332] cursor-pointer"
+              className="w-20 accent-[#0D9488] cursor-pointer"
             />
 
             <button
               type="button"
               onClick={handleStart60SecReset}
-              className={`inline-flex items-center gap-1.5 px-2.5 py-1.5 rounded-lg text-[11px] font-mono font-semibold border transition-colors cursor-pointer whitespace-nowrap ${
+              className={`inline-flex items-center gap-1.5 px-3 py-1.5 rounded-xl text-[11px] font-mono font-semibold border transition-colors cursor-pointer whitespace-nowrap ${
                 resetSecondsLeft !== null
-                  ? 'bg-[#1B4332]/12 text-[#1B4332] border-[#1B4332]/30'
-                  : 'bg-white hover:bg-[#F8F7F4] text-[#4A5550] border-[#141E19]/12'
+                  ? 'bg-[#F0FDFA] text-[#0D9488] border-[#99F6E4]'
+                  : 'bg-[#F0F9FF] hover:bg-[#E0F2FE] text-[#47627B] border-[#BAE6FD]'
               }`}
             >
-              <Clock className="w-3 h-3 text-[#1B4332]" aria-hidden="true" />
+              <Clock className="w-3 h-3 text-[#0D9488]" aria-hidden="true" />
               <span>
                 {resetSecondsLeft !== null ? `${resetSecondsLeft}s Reset` : '60s Timer'}
               </span>
@@ -420,8 +420,8 @@ export const FooterAudioPlayer: React.FC = () => {
         </div>
 
         {/* Right: Daily Affirmation / Reminder */}
-        <div className="flex items-center justify-between xl:justify-end gap-3 pt-2 xl:pt-0 border-t xl:border-t-0 border-[#141E19]/10">
-          <p className="font-editorial italic text-xs sm:text-sm text-[#141E19]">
+        <div className="flex items-center justify-between xl:justify-end gap-3 pt-2 xl:pt-0 border-t xl:border-t-0 border-[#E0F2FE]">
+          <p className="font-editorial italic text-xs sm:text-sm text-[#0F2942]">
             &ldquo;{DAILY_REMINDERS[reminderIndex]}&rdquo;
           </p>
           <button
@@ -431,7 +431,7 @@ export const FooterAudioPlayer: React.FC = () => {
             }
             aria-label="Show another daily reminder"
             title="Show another reminder"
-            className="p-1.5 rounded-full bg-white hover:bg-[#F8F7F4] border border-[#141E19]/15 text-[#4A5550] hover:text-[#141E19] shrink-0 cursor-pointer transition-colors"
+            className="p-1.5 rounded-full bg-[#F0F9FF] hover:bg-[#E0F2FE] border border-[#BAE6FD] text-[#0284C7] hover:text-[#0F2942] shrink-0 cursor-pointer transition-colors"
           >
             <RefreshCw className="w-3.5 h-3.5" />
           </button>
